@@ -1,0 +1,312 @@
+---
+title: "2014 NZ Election"
+output: html_document
+---
+
+```{r init, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+```
+
+```{r setup}
+library(sf)
+library(magrittr)
+library(dplyr)
+library(purrr)
+library(stringr)
+library(leaflet)
+library(leaflet.minicharts)
+library(nzelect)
+library(htmltools)
+library(htmlwidgets)
+
+begin_label_text <- "<div style='font-size:12px;float:left'>"
+begin_label_text_200 <- "<div style='font-size:12px;width:200px;float:left'>"
+begin_label_header <- "<span style='font-size:18px;font-weight:bold'>"
+end_label_header <- "</span><br>"
+end_label_text <- "</div>"
+
+load("data_geo/nzhex.rda")
+nzhex %<>%
+  mutate(
+    region = 
+      case_when(
+        abbr %in% c("NTH","WHR","TTT") ~ "Northland",
+        abbr %in% c("HLV","ROD","ECB","UHB","NSH","NCO","AKC","TEA","TĀM","MTA","EPS","PAK","KEL","MKK","MTR","NLY","BOT","MKE","MĀN","MRW","PAP","HUN","TMK") ~ "Auckland",
+        abbr %in% c("WAI","TKC","HMW","HME","TPŌ","COR","HWA") ~ "Waikato",
+        abbr %in% c("TGA","BOP","ROT","ECT","NAP","TUK","IKR","WKI") ~ "Bay of Plenty & Hawke's Bay",
+        abbr %in% c("NPL","WHN","ŌTA","PMN","RAN","TTH") ~ "Taranaki, Whanganui & Manawatu",
+        abbr %in% c("WLC","RON","HSH","ŌHĀ","MNA","RIM","WPA") ~ "Wellington",
+        TRUE ~ "South Island"
+      ))
+data("GE2014")
+GE2014 %<>%
+  mutate(id = Electorate %>% str_extract("[0-9]+") %>% as.integer())
+
+party_voters <-
+  GE2014 %>% 
+  filter(VotingType == "Party",
+         !str_detect(Party, "nformal")) %>% 
+  group_by(id) %>% 
+  summarise(Voters = sum(Votes)) %>% 
+  ungroup()
+
+candidate_voters <-
+  GE2014 %>% 
+  filter(VotingType == "Candidate",
+         !str_detect(Candidate, "nformal")) %>% 
+  group_by(id) %>% 
+  summarise(Voters = sum(Votes)) %>% 
+  ungroup()
+
+electorate_winners <-
+  GE2014 %>%
+  filter(VotingType == "Candidate") %>%
+  group_by(id, Party) %>%
+  summarise(Votes = sum(Votes)) %>%
+  top_n(1, Votes) %>%
+  ungroup() %>% 
+  inner_join(candidate_voters) %>% 
+  mutate(PerCent = round(Votes / Voters * 100, 1)) %>% 
+  mutate(party_colour = case_when(
+    Party == "National Party" ~ "#00529F",
+    Party == "Labour Party" ~ "#D82A20",
+    Party == "NZF" ~ "#000000",
+    Party == "ACT New Zealand" ~ "#FDE401",
+    Party == "United Future" ~ "#501557",
+    Party == "Maori Party" ~ "#EF4A42"
+  )) %>% 
+  mutate(opa = 0.2 + 0.7 * ((Votes - min(Votes)) / (max(Votes) - min(Votes))))
+electorate_winners$labeltext <-
+  electorate_winners %>% 
+  inner_join(nzhex) %>% 
+  transpose() %>% 
+  map(~ paste0(begin_label_text,
+               begin_label_header, .x$electorate_name, end_label_header,
+               .x$Party, " won with ", prettyNum(.x$Votes, big.mark=','), " votes.",
+               "<br>",
+               "<div style='width:95%'>",
+               "<span style='color:", .x$party_colour, ";float:left'>", .x$PerCent, "%</span>",
+               "<br clear='all' />",
+               "<span style='background:", .x$party_colour, ";width:", .x$PerCent, "%;float:left'>&nbsp;</span>",
+               "</div>",
+               end_label_text) %>% 
+        HTML())
+
+party_votes <-
+  GE2014 %>% 
+  filter(VotingType == "Party") %>% 
+  group_by(id, Party) %>% 
+  summarise(Votes = sum(Votes)) %>% 
+  ungroup() %>% 
+  inner_join(party_voters) %>% 
+  mutate(PerCent = round(Votes / Voters * 100, 1)) %>% 
+  mutate(party_colour = case_when(
+    Party == "National Party" ~ parties_v["National"],
+    Party == "Labour Party" ~ parties_v["Labour"],
+    Party == "New Zealand First Party" ~ parties_v["NZ First"],
+    Party == "ACT New Zealand" ~ parties_v["ACT"],
+    Party == "United Future" ~ parties_v["United Future"],
+    Party == "Maori Party" ~ parties_v["Māori"],
+    Party == "Green Party" ~ parties_v["Green"],
+    Party == "Aotearoa Legalise Cannabis Party" ~ parties_v["Legasie Cannabis"],
+    Party == "Ban1080" ~ parties_v["Ban 1080"],
+    Party == "Conservative" ~ parties_v["Conservative"],
+    Party == "Internet MANA" ~ parties_v["Internet"]
+  )) %>% 
+  group_by(Party) %>% 
+  #mutate(opa1 = 0.1 + 0.7 * ((Votes - min(Votes)) / (max(Votes) - min(Votes)))) %>% 
+  mutate(mean_votes = mean(Votes),
+         opa = case_when(
+           Votes < 0.8 * mean_votes ~ 0.15,
+           Votes < 0.95 * mean_votes ~ 0.3,
+           Votes <= 1.05 * mean_votes ~ 0.5,
+           Votes <= 1.2 * mean_votes ~ 0.7,
+           Votes > 1.2 * mean_votes ~ 0.85
+         ),
+         MaxPC = ceiling(max(PerCent))
+  ) %>% 
+  ungroup()
+party_votes$labeltext <-
+  party_votes %>% 
+  inner_join(nzhex) %>% 
+  transpose() %>% 
+  map(~ paste0(begin_label_text_200,
+               begin_label_header, .x$electorate_name, end_label_header,
+               prettyNum(.x$Votes, big.mark=','), " votes.",
+               "<br>",
+               "<div style='width:95%'>",
+               "<span style='color:", .x$party_colour, ";float:left'>", .x$PerCent, "%</span>",
+               "<br clear='all' />",
+               "<span style='background:", .x$party_colour, ";width:", round(.x$PerCent / .x$MaxPC * 100), "%;float:left'>&nbsp;</span>",
+               "</div>",
+               end_label_text) %>% 
+        HTML())
+
+coalition_votes <-
+  party_votes %>% 
+  filter(Party %in% c("National Party", "United Future", "Maori Party", "ACT New Zealand")) %>% 
+  group_by(id) %>% 
+  summarise(Votes = sum(Votes),
+            Voters = min(Voters),
+            party_colour = min(party_colour)) %>% 
+  mutate(PerCent = round(Votes / Voters * 100, 1),
+         MaxPC = ceiling(max(PerCent))) %>% 
+  ungroup() %>% 
+  mutate(mean_votes = mean(Votes),
+         opa = case_when(
+           Votes < 0.8 * mean_votes ~ 0.15,
+           Votes < 0.95 * mean_votes ~ 0.3,
+           Votes <= 1.05 * mean_votes ~ 0.5,
+           Votes <= 1.2 * mean_votes ~ 0.7,
+           Votes > 1.2 * mean_votes ~ 0.85
+         )
+  )
+coalition_votes$labeltext <-
+  coalition_votes %>% 
+  inner_join(nzhex) %>% 
+  transpose() %>% 
+  map(~ paste0(begin_label_text_200,
+               begin_label_header, .x$electorate_name, end_label_header,
+               prettyNum(.x$Votes, big.mark=','), " votes.",
+               "<br>",
+               "<div style='width:95%'>",
+               "<span style='color:", .x$party_colour, ";float:left'>", .x$PerCent, "%</span>",
+               "<br clear='all' />",
+               "<span style='background:", .x$party_colour, ";width:", round(.x$PerCent / .x$MaxPC * 100)) %>% 
+        HTML())
+```
+
+What does a hexmap look like?
+
+```{r hexmap, fig.width=9, fig.height=7}
+getFactorPal <- function(f) {
+  colorFactor(colormap::colormap(
+    colormap = colormap::colormaps$hsv,
+    nshades = length(f)), f)
+}
+
+leaflet(options=leafletOptions(
+  crs = leafletCRS("L.CRS.Simple"),
+  minZoom = 5.8, maxZoom = 5.8,
+  dragging = FALSE, zoomControl = FALSE,
+  attributionControl = FALSE
+)) %>% 
+  addPolygons(
+    data = nzhex,
+    label = ~nzhex %>% 
+      transpose() %>% 
+      map(~ paste0(begin_label_text,
+               begin_label_header, .x$electorate_name, end_label_header,
+               "In ", .x$region, ".",
+               end_label_text) %>% HTML()),
+    weight=2, color='#000000', group = 'Regions',
+    fillOpacity = 0.6, opacity = 1, fillColor = ~getFactorPal(region)(region),
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = inner_join(nzhex, electorate_winners),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'Electorate Seats',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "National Party")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'National Voters',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "Labour Party")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'Labour Voters',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "Green Party")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'Green Voters',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "New Zealand First Party")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'NZ First Voters',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(coalition_votes),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'Coalition Voters',
+    fillOpacity = ~opa, opacity = 1, 
+    fillColor = ~colorFactor(c("#FF4500", parties_v["National"]), PerCent)(PerCent),
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  # addMinicharts(
+  #   lng = st_coordinates(st_centroid(nzhex))[, "X"],
+  #   lat = st_coordinates(st_centroid(nzhex))[, "Y"],
+  #   chartdata = coalition_votes$PerCent,
+  #   type = "pie",
+  #   colorPalette = c("#FF4500", parties_v["National"]),
+  #   group = 'Coalition Voters'
+  # ) %>% 
+  addLabelOnlyMarkers(
+    data = nzhex %>% st_centroid(),
+    label = ~abbr,
+    labelOptions = labelOptions(
+      noHide = 'T', textOnly = T,
+      offset=c(-6,-11))
+  ) %>%
+  addLabelOnlyMarkers(
+    lng = 169.2595, lat = -35.21910,
+    label = HTML(paste0(
+      begin_label_text_200,
+      begin_label_header, "Info", end_label_header,
+      "Many electorates cross region <br> boundaries, so these are only a <br>",
+      "guide for making the distorted <br> geography clearer.",
+      end_label_text
+    )),
+    group = "Regions",
+    labelOptions = labelOptions(noHide = 'T', direction = "bottom")
+  ) %>% 
+  addLabelOnlyMarkers(
+    lng = 169.2595, lat = -35.21910,
+    label = HTML(paste0(
+      begin_label_text_200,
+      begin_label_header, "Info", end_label_header,
+      "Hexagons are coloured for the <br> winning party. The strength of <br>",
+      "colour indicates the number of <br> votes the winner received.",
+      end_label_text
+    )),
+    group = "Electorate Seats",
+    labelOptions = labelOptions(noHide = 'T', direction = "bottom")
+  ) %>% 
+  addLayersControl(
+    baseGroups = c("Regions", "Electorate Seats",
+                   "National Voters", "Labour Voters", "Green Voters", "NZ First Voters",
+                   "Coalition Voters"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>% 
+  onRender(
+    "function(el, t) {
+      var myMap = this;
+      // get rid of the ugly grey background
+      myMap._container.style['background'] = '#ffffff';
+    }"
+  )
+
+```
+
+
+
