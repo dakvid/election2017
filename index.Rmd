@@ -36,11 +36,27 @@ end_label_text <- "</div>"
 load("data_geo/nzhex.rda")
 load("data_votes/preliminary/GE2017_prelim.rda")
 
+party_voters_2017 <-
+  GE2017_prelim %>% 
+  filter(VotingType == "Party",
+         !str_detect(Party, "nformal")) %>% 
+  group_by(id) %>% 
+  summarise(Voters = sum(Votes)) %>% 
+  ungroup()
+
+candidate_voters_2017 <-
+  GE2017_prelim %>% 
+  filter(VotingType == "Candidate",
+         !str_detect(Candidate, "nformal")) %>% 
+  group_by(id) %>% 
+  summarise(Voters = sum(Votes)) %>% 
+  ungroup()
+
 getLeafletOptions <- function(minZoom, maxZoom, ...) {
   leafletOptions(
     crs = leafletCRS("L.CRS.Simple"),
     minZoom = minZoom, maxZoom = maxZoom,
-    dragging = FALSE, zoomControl = FALSE,
+    dragging = TRUE, zoomControl = FALSE,
     tap = FALSE,
     attributionControl = FALSE , ...)
 }
@@ -82,6 +98,7 @@ leaflet(options = getLeafletOptions(5.8, 5.8)) %>%
       var myMap = this;
       // get rid of the ugly grey background
       myMap._container.style['background'] = '#ffffff';
+      myMap.scrollWheelZoom.disable();
     }"
   )
 ```
@@ -113,5 +130,77 @@ Click through the storyboard and see different data from the election
 visualised in hexmaps...
 
 
+### Electorate Winners
+
+```{r hex_candidates}
+electorate_winners <-
+  GE2017_prelim %>%
+  filter(VotingType == "Candidate") %>%
+  group_by(id, Party) %>%
+  summarise(Votes = sum(Votes)) %>%
+  top_n(1, Votes) %>%
+  ungroup() %>% 
+  inner_join(candidate_voters_2017) %>% 
+  mutate(PerCent = round(Votes / Voters * 100, 1)) %>% 
+  mutate(party_colour = case_when(
+    Party == "National Party" ~ parties_v["National"],
+    Party == "Labour Party" ~ parties_v["Labour"],
+    Party == "New Zealand First Party" ~ parties_v["NZ First"],
+    Party == "ACT New Zealand" ~ parties_v["ACT"],
+    Party == "United Future" ~ parties_v["United Future"],
+    Party == "Māori Party" ~ parties_v["Māori"]
+  )) %>% 
+  mutate(opa = 0.1 + 0.85 * ((PerCent - min(PerCent)) / (max(PerCent) - min(PerCent))))
+electorate_winners$labeltext <-
+  electorate_winners %>% 
+  inner_join(nzhex) %>% 
+  transpose() %>% 
+  map(~ paste0(begin_label_text,
+               begin_label_header, .x$electorate_name, end_label_header,
+               .x$Party, " won with ", prettyNum(.x$Votes, big.mark=','), " votes.",
+               "<br>",
+               "<div style='width:95%'>",
+               "<span style='color:", .x$party_colour, ";float:left'>", .x$PerCent, "%</span>",
+               "<br clear='all' />",
+               "<span style='background:", .x$party_colour, ";width:", .x$PerCent, "%;float:left'>&nbsp;</span>",
+               "</div>",
+               end_label_text) %>% 
+        HTML())
+
+leaflet(options = getLeafletOptions(5.8, 5.8)) %>% 
+  addPolygons(
+    data = inner_join(nzhex, electorate_winners),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'Electorate Seats',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addLabelOnlyMarkers(
+    data = nzhex %>% st_centroid(),
+    label = ~abbr,
+    labelOptions = labelOptions(
+      noHide = 'T', textOnly = T,
+      offset=c(-6,-11))
+  ) %>% 
+  onRender(
+    "function(el, t) {
+      var myMap = this;
+      // get rid of the ugly grey background
+      myMap._container.style['background'] = '#ffffff';
+    }"
+  )
+```
+
+***
+
+Each hexagon is coloured for the party of the winning candidate. The strength of colour tracks
+the percentage of votes the winner received --- from
+`r electorate_winners %>% top_n(-1, PerCent) %$% PerCent`% for
+`r electorate_winners %>% top_n(-1, PerCent) %$% Party` in
+`r electorate_winners %>% top_n(-1, PerCent) %>% inner_join(nzhex) %$% electorate_name`
+to
+`r electorate_winners %>% top_n(1, PerCent) %$% PerCent`% for
+`r electorate_winners %>% top_n(1, PerCent) %$% Party` in
+`r electorate_winners %>% top_n(1, PerCent) %>% inner_join(nzhex) %$% electorate_name`.
 
 
