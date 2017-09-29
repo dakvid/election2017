@@ -1,0 +1,2639 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+<title>2017 New Zealand Election</title>
+
+<meta property="og:title" content="2017 New Zealand Election" />
+
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+
+<link rel="icon" href="data:image/x-icon;" type="image/x-icon">
+
+
+<script type="text/javascript">
+window.FlexDashboardComponents = [];
+</script>
+
+<script src="lib/jquery-1.12.4/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="lib/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="lib/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="lib/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="lib/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="lib/stickytableheaders-0.1.19/jquery.stickytableheaders.min.js"></script>
+<script src="lib/htmlwidgets-0.9/htmlwidgets.js"></script>
+<link href="lib/leaflet-0.7.7/leaflet.css" rel="stylesheet" />
+<script src="lib/leaflet-0.7.7/leaflet.js"></script>
+<link href="lib/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<link href="lib/leaflet-label-0.2.2/leaflet.label.css" rel="stylesheet" />
+<script src="lib/leaflet-label-0.2.2/leaflet.label.js"></script>
+<script src="lib/Proj4Leaflet-0.7.2/proj4-compressed.js"></script>
+<script src="lib/Proj4Leaflet-0.7.2/proj4leaflet.js"></script>
+<script src="lib/leaflet-binding-1.1.0/leaflet.js"></script>
+<link href="lib/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<script src="lib/sly-1.6.1/sly.min.js"></script>
+<style type="text/css">
+
+/*
+ Dashboard CSS from Keen IO Dashboards
+ (https://github.com/keen/dashboards)
+*/
+
+body {
+  background: #f2f2f2;
+  padding: 60px 0 0 8px; /* padding-top overridden by theme */
+}
+
+body hr {
+  border-color: #d7d7d7;
+  margin: 10px 0;
+}
+
+.navbar-inverse .navbar-nav > li > a,
+.navbar .navbar-brand {
+  text-decoration: none;
+}
+
+.navbar-logo {
+  margin-top: 1px;
+}
+
+.navbar-logo img {
+  margin-right: 12px;
+}
+
+.navbar-author {
+  margin-left: 10px;
+  font-size: 15px;
+}
+
+.navbar .dropdown-menu .fa {
+  min-width: 20px;
+}
+
+.navbar .dropdown-menu {
+  min-width: 150px;
+  max-height: 500px;
+  overflow: auto;
+}
+
+.chart-wrapper,
+.nav-tabs-custom,
+.sbframe-commentary
+{
+  background: #fff;
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
+  margin-bottom: 8px;
+  margin-right: 8px;
+}
+
+.chart-title {
+  border-bottom: 1px solid #d7d7d7;
+  color: #666;
+  font-size: 14px;
+  font-weight: 300;
+  padding: 7px 10px 4px;
+}
+
+.chart-wrapper .chart-title:empty {
+  display: none;
+}
+
+.chart-wrapper .chart-stage {
+  overflow: hidden;
+  padding: 5px 10px;
+  position: relative;
+}
+
+.chart-wrapper .chart-notes {
+  background: #fbfbfb;
+  border-top: 1px solid #e2e2e2;
+  color: #808080;
+  font-size: 12px;
+  padding: 8px 10px 5px;
+}
+
+/*
+ CSS for handling flexbox layout
+*/
+
+#dashboard-container {
+  visibility: hidden;
+}
+
+.tab-content>.dashboard-page-wrapper.active {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.dashboard-page-wrapper {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.dashboard-row-orientation {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.dashboard-row {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.dashboard-row-flex {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+
+.dashboard-column-orientation {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.dashboard-column {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.chart-wrapper-flex {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.chart-stage-flex {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  position: relative;
+}
+
+.chart-shim {
+  position: absolute;
+  left: 8px; top: 8px; right: 8px; bottom: 8px;
+}
+
+.no-padding .chart-shim {
+  left: 0; top: 0; right: 0; bottom: 0;
+}
+
+.flowing-content-shim {
+  overflow: auto;
+  left: 0; top: 0; right: 0; bottom: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.flowing-content-container {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.chart-stage .table-bordered {
+  border: none;
+}
+
+.chart-stage .table-bordered > tbody > tr > th,
+.chart-stage .table-bordered > tfoot > tr > th,
+.chart-stage .table-bordered > tbody > tr > td,
+.chart-stage .table-bordered > tfoot > tr > td {
+  border: none;
+}
+
+.chart-stage .table-bordered > tbody > tr > td {
+  border-top: 1px solid #dddddd;
+}
+
+.chart-stage .table-bordered > thead > tr > th {
+  border: none;
+  border-bottom: 2px solid #dddddd;
+}
+
+.bootstrap-table table>thead {
+  background-color: #fff;
+}
+
+.bootstrap-table table.data,
+.bootstrap-table table.shiny-table {
+  width: inherit !important;
+}
+
+.bootstrap-table table.data>tbody>tr>th,
+.bootstrap-table table.shiny-table>tbody>tr>th {
+  border-top: none;
+  border-bottom: 2px solid #dddddd;
+  padding: 5px;
+}
+
+.bootstrap-table .data td[align=right] {
+  font-family: inherit;
+}
+
+.chart-wrapper form {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.shiny-input-container label {
+  font-weight: normal;
+}
+
+.chart-stage .html-widget {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.chart-stage .html-widget-static-bound {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.chart-stage .shiny-bound-output {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Omit display of empty paragraphs */
+
+.chart-shim>p:empty {
+  display: none;
+}
+
+.chart-stage>p:empty {
+  display: none;
+}
+
+/* Omit display of special knitr options div*/
+
+.chart-stage .knitr-options {
+  display: none;
+}
+
+/* Automatically resizing images */
+
+.image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+}
+
+.image-container img {
+  opacity: 0;
+  overflow: hidden;
+}
+
+/* Value box */
+
+.value-box {
+  border-radius: 2px;
+  position: relative;
+  display: block;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.value-box > .inner {
+  padding: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.value-box .value {
+  font-size: 38px;
+  font-weight: bold;
+  margin: 0 0 3px 0;
+  white-space: nowrap;
+  padding: 0;
+}
+
+.value-box .caption {
+  font-size: 15px;
+}
+.value-box .caption > small {
+  display: block;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.value-box .icon i {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 80px;
+  color: rgba(0, 0, 0, 0.15);
+}
+
+.linked-value:hover {
+  cursor: pointer;
+}
+
+.value-box.linked-value:hover {
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* STORYBOARD */
+
+.storyboard-nav button {
+  background: transparent;
+  border: 0;
+  opacity: .3;
+  outline: none;
+  padding: 0;
+}
+
+.storyboard-nav button:hover,
+.storyboard-nav button:hover {
+  opacity: .5;
+}
+
+.storyboard-nav button:disabled,
+.storyboard-nav button:disabled {
+  opacity: .1;
+}
+
+.storyboard-nav .sbnext,
+.storyboard-nav .sbprev {
+  float: left;
+  width: 2%;
+  height: 120px;
+  font-size: 50px;
+}
+
+.storyboard-nav .sbprev {
+  text-align: left;
+  width: 2%;
+}
+
+.storyboard-nav .sbnext {
+  float: right;
+  text-align: right;
+  margin-right: 8px;
+}
+
+.storyboard-nav .sbframelist {
+  margin: 0 auto;
+  width: 94%;
+  height: 120px;
+  overflow: hidden;
+  text-shadow: none;
+  margin-bottom: 8px;
+}
+
+.storyboard-nav .sbframelist ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.storyboard-nav .sbframelist ul li {
+  float: left;
+  width: 270px;
+  height: 100%;
+  padding: 10px 10px 10px 10px;
+  margin-right: 8px;
+  background: #fff;
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
+  color: #3a3c47;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.storyboard-nav .sbframelist ul li:last-child {
+  margin-right: 0px;
+}
+
+.storyboard-nav .sbframelist ul li.active {
+  color: #fff;
+  background: #B8B8B8;
+}
+
+.sbframe-commentary {
+  width: 300px;
+  background: #fbfbfb;
+  font-size: 14px;
+}
+
+.sbframe-commentary ul {
+  padding-left: 22px;
+}
+
+.sbframe.active {
+  display: flex;
+}
+
+.sbframe:not(.active) {
+  display: none;
+}
+
+/* NAV TABS */
+
+.nav-tabs-custom > .nav-tabs {
+  margin: 0;
+  border-bottom: 1px solid #d7d7d7;
+  color: #666;
+  font-size: 14px;
+  font-weight: 300;
+  border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+}
+.nav-tabs-custom > .nav-tabs > li {
+  border-top: 3px solid transparent;
+  margin-bottom: -1px;
+  margin-right: 5px;
+}
+.nav-tabs-custom > .nav-tabs > li > a,
+.nav-tabs-custom > .nav-tabs > li > a:active {
+  color: #666;
+  font-weight: 300;
+  font-size: 14px;
+  border-radius: 0;
+  padding: 3px 10px 5px;
+  text-transform: none;
+}
+
+.nav-tabs-custom > .nav-tabs > li:not(.active) > a {
+  border-bottom-color: transparent;
+}
+
+.nav-tabs-custom > .nav-tabs > li > a.text-muted {
+  color: #999;
+}
+.nav-tabs-custom > .nav-tabs > li > a,
+.nav-tabs-custom > .nav-tabs > li > a:hover {
+  background: transparent;
+  margin: 0;
+}
+.nav-tabs-custom > .nav-tabs > li > a:hover {
+  color: #999;
+}
+.nav-tabs-custom > .nav-tabs > li:not(.active) > a:hover,
+.nav-tabs-custom > .nav-tabs > li:not(.active) > a:focus,
+.nav-tabs-custom > .nav-tabs > li:not(.active) > a:active {
+  border-color: transparent;
+}
+.nav-tabs-custom > .nav-tabs > li.active {
+  border-top-color: #3c8dbc;
+}
+.nav-tabs-custom > .nav-tabs > li.active > a,
+.nav-tabs-custom > .nav-tabs > li.active:hover > a {
+  background-color: #fff;
+  color: #666;
+}
+.nav-tabs-custom > .nav-tabs > li.active > a {
+  border-top-color: transparent;
+  border-left-color: #d7d7d7;
+  border-right-color: #d7d7d7;
+}
+.nav-tabs-custom > .nav-tabs > li:first-of-type {
+  margin-left: 0;
+}
+.nav-tabs-custom > .nav-tabs > li:first-of-type.active > a {
+  border-left-color: transparent;
+}
+.nav-tabs-custom > .nav-tabs.pull-right {
+  float: none !important;
+}
+.nav-tabs-custom > .nav-tabs.pull-right > li {
+  float: right;
+}
+.nav-tabs-custom > .nav-tabs.pull-right > li:first-of-type {
+  margin-right: 0;
+}
+.nav-tabs-custom > .nav-tabs.pull-right > li:first-of-type > a {
+  border-left-width: 1px;
+}
+.nav-tabs-custom > .nav-tabs.pull-right > li:first-of-type.active > a {
+  border-left-color: #d7d7d7;
+  border-right-color: transparent;
+}
+.nav-tabs-custom > .nav-tabs > li.header {
+  line-height: 35px;
+  padding: 0 10px;
+  font-size: 20px;
+  color: #666;
+}
+.nav-tabs-custom > .nav-tabs > li.header > .fa,
+.nav-tabs-custom > .nav-tabs > li.header > .glyphicon,
+.nav-tabs-custom > .nav-tabs > li.header > .ion {
+  margin-right: 5px;
+}
+.nav-tabs-custom > .tab-content {
+  background: #fff;
+  padding: 0;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.nav-tabs-custom > .tab-content > .chart-wrapper {
+  background: #fff;
+  border: none;
+  margin: 0;
+}
+
+
+.nav-tabs-custom > .tab-content > .active {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.nav-tabs-custom .dropdown.open > a:active,
+.nav-tabs-custom .dropdown.open > a:focus {
+  background: transparent;
+  color: #999;
+}
+
+
+@media (max-width: 767px) {
+  .value-box {
+    text-align: center;
+    margin-right: 8px;
+  }
+  .value-box .icon {
+    display: none;
+  }
+}
+
+/* Fixed position sidebar */
+
+.section.sidebar {
+  position: fixed;
+  top: 51px; /* overridden by theme */
+  left: 0;
+  bottom: 0;
+  border-right: 1px solid #e2e2e2;
+  background-color: white; /* overridden by theme */
+  padding-left: 10px;
+  padding-right: 10px;
+  visibility: hidden;
+  overflow: auto;
+}
+
+.section.sidebar form p:first-child {
+  margin-top: 10px;
+}
+
+/* Embedded source code */
+
+#flexdashboard-source-code {
+  display: none;
+}
+
+.featherlight-content #flexdashboard-source-code {
+  display: inline-block;
+}
+
+.featherlight-content {
+  width: 80%;
+  max-width: 800px;
+  padding: 0 !important;
+  border-bottom: none !important;
+}
+
+.featherlight:last-of-type {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.featherlight-inner {
+  width: 100%;
+}
+
+.featherlight-content pre {
+  margin: 0;
+  border: 0;
+  background: #fff;
+  font-size: 12px;
+}
+
+.unselectable {
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+#flexdashboard-source-code code {
+  -ms-user-select: text;
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -o-user-select: text;
+  user-select: text;
+}
+
+/* DataTables Tweaks */
+
+.dataTables_filter input[type="search"] {
+  -webkit-appearance: searchfield;
+  outline: none;
+}
+
+.dataTables_wrapper.no-footer
+.dataTables_info {
+  padding-top: 0;
+}
+
+
+table.dataTable thead th {
+  border-bottom: 1px solid #d7d7d7;
+}
+
+.dataTables_wrapper.no-footer .dataTables_scrollBody {
+  border-bottom: 1px solid #d7d7d7;
+}
+
+/* Mobile phone only CSS */
+
+.desktop-layout div.section.mobile {
+  display: none;
+}
+
+.mobile-layout div.section.no-mobile {
+  display: none;
+}
+
+.mobile-figure {
+  display: none;
+}
+
+
+
+body {
+  padding-top: 69px;
+}
+
+.section.sidebar {
+  top: 60px;
+  background-color: rgba(24, 188, 156, 0.1);
+}
+
+.value-box {
+  color: #fff;
+}
+
+.bg-primary {
+  background-color: rgba(44, 62, 80, 0.7);
+}
+
+.storyboard-nav .sbframelist ul li.active {
+  background-color: rgba(44, 62, 80, 0.7);
+}
+
+.nav-tabs-custom > .nav-tabs > li.active {
+  border-top-color: rgba(44, 62, 80, 0.7);
+}
+
+
+.bg-info {
+  background-color: rgba(52, 152, 219, 0.7);
+}
+
+.bg-warning {
+  background-color: rgba(243, 156, 18, 0.7);
+}
+
+.bg-success {
+  background-color: rgba(24, 188, 156, 0.7);
+}
+
+.bg-danger {
+  background-color: rgba(231, 76, 60, 0.7);
+}
+
+@media only screen and (min-width: 768px) {
+html, body {
+  height: 100%;
+}
+
+#dashboard-container {
+  height: 100%;
+}
+}
+</style>
+
+
+
+</head>
+
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<div class="container-fluid">
+<div class="navbar-header">
+
+<button id="navbar-button" type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+</button>
+
+<span class="navbar-logo pull-left">
+  
+</span>
+<span class="navbar-brand">
+  2017 New Zealand Election
+  <span class="navbar-author">
+        </span>
+</span>
+
+</div>
+<div id="navbar" class="navbar-collapse collapse">
+<ul class="nav navbar-nav navbar-left">
+</ul>
+<ul class="nav navbar-nav navbar-right">
+</ul>
+</div><!--/.nav-collapse-->
+</div><!--/.container-->
+</div><!--/.navbar-->
+
+<script type="text/javascript">
+
+
+var FlexDashboard = (function () {
+
+  // initialize options
+  var _options = {};
+
+  var FlexDashboard = function() {
+
+    // default options
+    _options = $.extend(_options, {
+      theme: "cosmo",
+      fillPage: false,
+      orientation: 'columns',
+      storyboard: false,
+      defaultFigWidth: 576,
+      defaultFigHeight: 461,
+      defaultFigWidthMobile: 360,
+      defaultFigHeightMobile: 461,
+      isMobile: false,
+      isPortrait: false
+    });
+  };
+
+  function init(options) {
+
+    // extend default options
+    $.extend(true, _options, options);
+
+    // add ids to sections that don't have them (pandoc won't assign ids
+    // to e.g. sections with titles consisting of only chinese characters)
+    var nextId = 1;
+    $('.level1:not([id]),.level2:not([id]),.level3:not([id])').each(function() {
+      $(this).attr('id', 'dashboard-' + nextId++);
+    });
+
+    // find navbar items
+    var navbarItems = $('#flexdashboard-navbar');
+    if (navbarItems.length)
+      navbarItems = JSON.parse(navbarItems.html());
+    addNavbarItems(navbarItems);
+
+    // find the main dashboard container
+    var dashboardContainer = $('#dashboard-container');
+
+    // resolve mobile classes
+    resolveMobileClasses(dashboardContainer);
+
+    // one time global initialization for components
+    componentsInit(dashboardContainer);
+
+    // look for a global sidebar
+    var globalSidebar = dashboardContainer.find(".section.level1.sidebar");
+    if (globalSidebar.length > 0) {
+
+      // global layout for fullscreen displays
+      if (!isMobilePhone()) {
+
+         // hoist it up to the top level
+         globalSidebar.insertBefore(dashboardContainer);
+
+         // lay it out (set width/positions)
+         layoutSidebar(globalSidebar, dashboardContainer);
+
+      // tuck sidebar into first page for mobile phones
+      } else {
+
+        // convert it into a level3 section
+        globalSidebar.removeClass('sidebar');
+        globalSidebar.removeClass('level1');
+        globalSidebar.addClass('level3');
+        var h1 = globalSidebar.children('h1');
+        var h3 = $('<h3></h3>');
+        h3.html(h1.html());
+        h3.insertBefore(h1);
+        h1.remove();
+
+        // move it into the first page
+        var page = dashboardContainer.find('.section.level1').first();
+        if (page.length > 0)
+          page.prepend(globalSidebar);
+      }
+    }
+
+    // look for pages to layout
+    var pages = $('div.section.level1');
+    if (pages.length > 0) {
+
+        // find the navbar and collapse on clicked
+        var navbar = $('#navbar');
+        navbar.on("click", "a[data-toggle!=dropdown]", null, function () {
+           navbar.collapse('hide');
+        });
+
+        // envelop the dashboard container in a tab content div
+        dashboardContainer.wrapInner('<div class="tab-content"></div>');
+
+        pages.each(function(index) {
+
+          // lay it out
+          layoutDashboardPage($(this));
+
+          // add it to the navbar
+          addToNavbar($(this), index === 0);
+
+        });
+
+    } else {
+
+      // remove the navbar and navbar button if we don't
+      // have any navbuttons
+      if (navbarItems.length === 0) {
+        $('#navbar').remove();
+        $('#navbar-button').remove();
+      }
+
+      // add the storyboard class if requested
+      if (_options.storyboard)
+        dashboardContainer.addClass('storyboard');
+
+      // layout the entire page
+      layoutDashboardPage(dashboardContainer);
+    }
+
+    // if we are in shiny we need to trigger a window resize event to
+    // force correct layout of shiny-bound-output elements
+    if (isShinyDoc())
+      $(window).trigger('resize');
+
+    // make main components visible
+    $('.section.sidebar').css('visibility', 'visible');
+    dashboardContainer.css('visibility', 'visible');
+
+    // handle location hash
+    handleLocationHash();
+
+    // intialize prism highlighting
+    initPrismHighlighting();
+
+    // record mobile and orientation state then register a handler
+    // to refresh if it changes
+    _options.isMobile = isMobilePhone();
+    _options.isPortrait = isPortrait();
+    $(window).on('resize', function() {
+      if (_options.isMobile !== isMobilePhone() ||
+          _options.isPortrait !== isPortrait()) {
+        window.location.reload();
+      }
+    });
+
+    // trigger layoutcomplete event
+    dashboardContainer.trigger('flexdashboard:layoutcomplete');
+  }
+
+  function resolveMobileClasses(dashboardContainer) {
+     // add top level layout class
+    dashboardContainer.addClass(isMobilePhone() ? 'mobile-layout' :
+                                                  'desktop-layout');
+
+    // look for .mobile sections and add .no-mobile to their peers
+    var mobileSections = $('.section.mobile');
+    mobileSections.each(function() {
+       var id = $(this).attr('id');
+       var nomobileId = id.replace(/-\d+$/, '');
+       $('#' + nomobileId).addClass('no-mobile');
+    });
+  }
+
+  function addNavbarItems(navbarItems) {
+
+    var navbarLeft = $('ul.navbar-left');
+    var navbarRight = $('ul.navbar-right');
+
+    for (var i = 0; i<navbarItems.length; i++) {
+
+      // get the item
+      var item = navbarItems[i];
+
+      // determine the container
+      var container = null;
+      if (item.align === "left")
+        container = navbarLeft;
+      else
+        container = navbarRight;
+
+      // navbar menu if we have multiple items
+      if (item.items) {
+        var menu = navbarMenu(null, item.icon, item.title, container);
+        for (var j = 0; j<item.items.length; j++) {
+          var subItem = item.items[j];
+          var li = $('<li></li>');
+          li.append(navbarLink(subItem.icon, subItem.title, subItem.href, subItem.target));
+          menu.append(li);
+        }
+      } else {
+        var li = $('<li></li>');
+        li.append(navbarLink(item.icon, item.title, item.href, item.target));
+        container.append(li);
+      }
+    }
+  }
+
+  // create or get a reference to an existing dropdown menu
+  function navbarMenu(id, icon, title, container) {
+    var existingMenu = [];
+    if (id)
+      existingMenu = container.children('#' + id);
+    if (existingMenu.length > 0) {
+      return existingMenu.children('ul');
+    } else {
+      var li = $('<li></li>');
+      if (id)
+        li.attr('id', id);
+      li.addClass('dropdown');
+      // auto add "Share" title on mobile if necessary
+      if (!title && icon && (icon === "fa-share-alt") && isMobilePhone())
+        title = "Share";
+      if (title) {
+        title = title + ' <span class="caret"></span>';
+      }
+      var a = navbarLink(icon, title, "#");
+      a.addClass('dropdown-toggle');
+      a.attr('data-toggle', 'dropdown');
+      a.attr('role', 'button');
+      a.attr('aria-expanded', 'false');
+      li.append(a);
+      var ul = $('<ul class="dropdown-menu"></ul>');
+      ul.attr('role', 'menu');
+      li.append(ul);
+      container.append(li);
+      return ul;
+    }
+  }
+
+  function addToNavbar(page, active) {
+
+    // capture the id and data-icon attribute (if any)
+    var id = page.attr('id');
+    var icon = page.attr('data-icon');
+    var navmenu = page.attr('data-navmenu');
+
+    // get hidden state (transfer this to navbar)
+    var hidden = page.hasClass('hidden');
+    page.removeClass('hidden');
+
+    // sanitize the id for use with bootstrap tabs
+    id = id.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_');
+    page.attr('id', id);
+
+    // get the wrapper
+    var wrapper = page.closest('.dashboard-page-wrapper');
+
+    // move the id to the wrapper
+    page.removeAttr('id');
+    wrapper.attr('id', id);
+
+    // add the tab-pane class to the wrapper
+    wrapper.addClass('tab-pane');
+    if (active)
+      wrapper.addClass('active');
+
+    // get a reference to the h1, discover it's id and title, then remove it
+    var h1 = wrapper.find('h1').first();
+    var title = h1.html();
+    h1.remove();
+
+    // create a navbar item
+    var li = $('<li></li>');
+    var a = navbarLink(icon, title, '#' + id);
+    a.attr('data-toggle', 'tab');
+    li.append(a);
+
+    // add it to the navbar (or navbar menu if specified)
+    var container = $('ul.navbar-left');
+    if (navmenu) {
+      var menuId = navmenu.replace(/\s+/g, '');
+      var menu = navbarMenu(menuId, null, navmenu, container);
+      menu.append(li);
+    } else {
+      container.append(li);
+    }
+
+    // hide it if requested
+    if (hidden)
+      li.addClass('hidden');
+  }
+
+  function navbarLink(icon, title, href, target) {
+
+    var a = $('<a></a>');
+    if (icon) {
+
+      // get the name of the icon set and icon
+      var dashPos = icon.indexOf("-");
+      var iconSet = icon.substring(0, dashPos);
+      var iconName = icon.substring(dashPos + 1);
+
+      // create the icon
+      var iconElement = $('<span class="' + iconSet + ' ' + icon + '"></span>');
+      if (title)
+        iconElement.css('margin-right', '7px');
+      a.append(iconElement);
+      // if href is null see if we can auto-generate based on icon (e.g. social)
+      if (!href)
+        maybeGenerateLinkFromIcon(iconName, a);
+    }
+    if (title)
+      a.append(title);
+
+    // add the href.
+    if (href) {
+      if (href === "source_embed") {
+        a.attr('href', '#');
+        a.attr('data-featherlight', "#flexdashboard-source-code");
+        a.featherlight({
+            beforeOpen: function(event){
+              $('body').addClass('unselectable');
+            },
+            afterClose: function(event){
+              $('body').removeClass('unselectable');
+            }
+        });
+      } else {
+        a.attr('href', href);
+      }
+    }
+
+    // add the arget
+    if (target)
+      a.attr('target', target);
+
+    return a;
+  }
+
+  // auto generate a link from an icon name (e.g. twitter) when possible
+  function maybeGenerateLinkFromIcon(iconName, a) {
+
+     var serviceLinks = {
+      "twitter": "https://twitter.com/share?text=" + encodeURIComponent(document.title) + "&url="+encodeURIComponent(location.href),
+      "facebook": "https://www.facebook.com/sharer/sharer.php?s=100&p[url]="+encodeURIComponent(location.href),
+      "google-plus": "https://plus.google.com/share?url="+encodeURIComponent(location.href),
+      "linkedin": "https://www.linkedin.com/shareArticle?mini=true&url="+encodeURIComponent(location.href) + "&title=" + encodeURIComponent(document.title),
+      "pinterest": "https://pinterest.com/pin/create/link/?url="+encodeURIComponent(location.href) + "&description=" + encodeURIComponent(document.title)
+    };
+
+    var makeSocialLink = function(a, href) {
+      a.attr('href', '#');
+      a.on('click', function(e) {
+        e.preventDefault();
+        window.open(href);
+      });
+    };
+
+    $.each(serviceLinks, function(key, value) {
+      if (iconName.indexOf(key) !== -1)
+        makeSocialLink(a, value);
+    });
+  }
+
+  // layout a dashboard page
+  function layoutDashboardPage(page) {
+
+    // use a page wrapper so that free form content above the
+    // dashboard appears at the top rather than the side (as it
+    // would without the wrapper in a column orientation)
+    var wrapper = $('<div class="dashboard-page-wrapper"></div>');
+    page.wrap(wrapper);
+
+    // if there are no level2 or level3 headers synthesize a level3
+    // header to contain the (e.g. frame it, scroll container, etc.)
+    var headers = page.find('h2,h3');
+    if (headers.length === 0)
+      page.wrapInner('<div class="section level3"></div>');
+
+    // hoist up any content before level 2 or level 3 headers
+    var children = page.children();
+    children.each(function(index) {
+      if ($(this).hasClass('level2') || $(this).hasClass('level3'))
+        return false;
+      $(this).insertBefore(page);
+    });
+
+    // determine orientation and fillPage behavior for distinct media
+    var orientation, fillPage, storyboard;
+
+    // media: mobile phone
+    if (isMobilePhone()) {
+
+      // if there is a sidebar we need to ensure it's content
+      // is properly framed as an h3
+      var sidebar = page.find('.section.sidebar');
+      sidebar.removeClass('sidebar');
+      sidebar.wrapInner('<div class="section level3"></div>');
+      var h2 = sidebar.find('h2');
+      var h3 = $('<h3></h3>');
+      h3.html(h2.html());
+      h3.insertBefore(h2);
+      h2.remove();
+
+      // wipeout h2 elements then enclose them in a single h2
+      var level2 = page.find('div.section.level2');
+      level2.each(function() {
+        level2.children('h2').remove();
+        level2.children().unwrap();
+      });
+      page.wrapInner('<div class="section level2"></div>');
+
+      // substitute mobile images
+      if (isPortrait()) {
+        var mobileFigures = $('img.mobile-figure');
+        mobileFigures.each(function() {
+          // get the src (might be base64 encoded)
+          var src = $(this).attr('src');
+
+          // find it's peer
+          var id = $(this).attr('data-mobile-figure-id');
+          var img = $('img[data-figure-id=' + id + "]");
+          img.attr('src', src)
+             .attr('width', _options.defaultFigWidthMobile)
+             .attr('height', _options.defaultFigHeightMobile);
+        });
+      }
+
+      // hoist storyboard commentary into it's own section
+      if (page.hasClass('storyboard')) {
+        var commentaryHR = page.find('div.section.level3 hr');
+        commentaryHR.each(function() {
+          var commentary = $(this).nextAll().detach();
+          var commentarySection = $('<div class="section level3"></div>');
+          commentarySection.append(commentary);
+          commentarySection.insertAfter($(this).closest('div.section.level3'));
+          $(this).remove();
+        });
+      }
+
+      // force a non full screen layout by columns
+      orientation = _options.orientation = 'columns';
+      fillPage = _options.fillPage = false;
+      storyboard = _options.storyboard = false;
+
+    // media: desktop
+    } else {
+
+      // determine orientation
+      orientation = page.attr('data-orientation');
+      if (orientation !== 'rows' && orientation != 'columns')
+        orientation = _options.orientation;
+
+      // determine storyboard mode
+      storyboard = page.hasClass('storyboard');
+
+      // fillPage based on options (force for storyboard)
+      fillPage = _options.fillPage || storyboard;
+
+      // handle sidebar
+      var sidebar = page.find('.section.level2.sidebar');
+      if (sidebar.length > 0)
+        layoutSidebar(sidebar, page);
+    }
+
+    // give it and it's parent divs height: 100% if we are in fillPage mode
+    if (fillPage) {
+      page.addClass('vertical-layout-fill');
+      page.css('height', '100%');
+      page.parents('div').css('height', '100%');
+    } else {
+      page.addClass('vertical-layout-scroll');
+    }
+
+    // perform the layout
+    if (storyboard)
+      layoutPageAsStoryboard(page);
+    else if (orientation === 'rows')
+      layoutPageByRows(page, fillPage);
+    else if (orientation === 'columns')
+      layoutPageByColumns(page, fillPage);
+  }
+
+  function layoutSidebar(sidebar, content) {
+
+    // get it out of the header hierarchy
+    sidebar = sidebar.first();
+    if (sidebar.hasClass('level1')) {
+      sidebar.removeClass('level1');
+      sidebar.children('h1').remove();
+    } else if (sidebar.hasClass('level2')) {
+      sidebar.removeClass('level2');
+      sidebar.children('h2').remove();
+    }
+
+    // determine width
+    var sidebarWidth = isTablet() ? 220 : 250;
+    var dataWidth = parseInt(sidebar.attr('data-width'));
+    if (dataWidth)
+      sidebarWidth = dataWidth;
+
+    // set the width and shift the page right to accomodate the sidebar
+    sidebar.css('width', sidebarWidth + 'px');
+    content.css('padding-left', sidebarWidth + 'px');
+
+    // wrap it's contents in a form
+    sidebar.wrapInner($('<form></form>'));
+  }
+
+  function layoutPageAsStoryboard(page) {
+
+    // create storyboard navigation
+    var nav = $('<div class="storyboard-nav"></div>');
+
+    // add navigation buttons
+    var prev = $('<button class="sbprev"><i class="fa fa-angle-left"></i></button>');
+    nav.append(prev);
+    var next= $('<button class="sbnext"><i class="fa fa-angle-right"></i></button>');
+    nav.append(next);
+
+    // add navigation frame
+    var frameList = $('<div class="sbframelist"></div>');
+    nav.append(frameList);
+    var ul = $('<ul></ul>');
+    frameList.append(ul);
+
+     // find all the level3 sections (those are the storyboard frames)
+    var frames = page.find('div.section.level3');
+    frames.each(function() {
+
+      // mark it
+      $(this).addClass('sbframe');
+
+      // divide it into chart content and (optional) commentary
+      $(this).addClass('dashboard-column-orientation');
+
+      // stuff the chart into it's own div w/ flex
+      $(this).wrapInner('<div class="sbframe-component"></div>');
+      setFlex($(this), 1);
+      var frame = $(this).children('.sbframe-component');
+
+      // extract the title from the h3
+      var li = $('<li></li>');
+      var h3 = frame.children('h3');
+      li.html(h3.html());
+      h3.remove();
+      ul.append(li);
+
+      // extract commentary
+      var hr = frame.children('hr');
+      if (hr.length) {
+        var commentary = hr.nextAll().detach();
+        hr.remove();
+        var commentaryFrame = $('<div class="sbframe-commentary"></div>');
+        commentaryFrame.addClass('flowing-content-shim');
+        commentaryFrame.addClass('flowing-content-container');
+        commentaryFrame.append(commentary);
+        $(this).append(commentaryFrame);
+
+        // look for a data-commentary-width attribute
+        var commentaryWidth = $(this).attr('data-commentary-width');
+        if (commentaryWidth)
+          commentaryFrame.css('width', commentaryWidth + 'px');
+      }
+
+      // layout the chart (force flex)
+      var result = layoutChart(frame, true);
+
+      // ice the notes if there are none
+      if (!result.notes)
+        frame.find('.chart-notes').remove();
+
+      // set flex on chart
+      setFlex(frame, 1);
+    });
+
+    // create a div to hold all the frames
+    var frameContent = $('<div class="sbframe-content"></div>');
+    frameContent.addClass('dashboard-row-orientation');
+    frameContent.append(frames.detach());
+
+    // row orientation to stack nav and frame content
+    page.addClass('dashboard-row-orientation');
+    page.append(nav);
+    page.append(frameContent);
+    setFlex(frameContent, 1);
+
+    // initialize sly
+    var sly = new Sly(frameList, {
+    		horizontal: true,
+    		itemNav: 'basic',
+    		smart: true,
+    		activateOn: 'click',
+    		startAt: 0,
+    		scrollBy: 1,
+    		activatePageOn: 'click',
+    		speed: 200,
+    		moveBy: 600,
+    		dragHandle: true,
+    		dynamicHandle: true,
+    		clickBar: true,
+    		keyboardNavBy: 'items',
+    		next: next,
+    		prev: prev
+    	}).init();
+
+    // make first frame active
+    frames.removeClass('active');
+    frames.first().addClass('active');
+
+    // subscribe to frame changed events
+    sly.on('active', function (eventName, itemIndex) {
+      frames.removeClass('active');
+      frames.eq(itemIndex).addClass('active')
+                          .trigger('shown');
+    });
+  }
+
+  function layoutPageByRows(page, fillPage) {
+
+    // row orientation
+    page.addClass('dashboard-row-orientation');
+
+    // find all the level2 sections (those are the rows)
+    var rows = page.find('div.section.level2');
+
+    // if there are no level2 sections then treat the
+    // entire page as if it's a level 2 section
+    if (rows.length === 0) {
+      page.wrapInner('<div class="section level2"></div>');
+      rows = page.find('div.section.level2');
+    }
+
+    rows.each(function () {
+
+      // flags
+      var haveNotes = false;
+      var haveFlexHeight = true;
+
+      // remove the h2
+      $(this).children('h2').remove();
+
+      // check for a tabset
+      var isTabset = $(this).hasClass('tabset');
+      if (isTabset)
+        layoutTabset($(this));
+
+      // give it row layout semantics if it's not a tabset
+      if (!isTabset)
+        $(this).addClass('dashboard-row');
+
+      // find all of the level 3 subheads
+      var columns = $(this).find('div.section.level3');
+
+      // determine figureSizes sizes
+      var figureSizes = chartFigureSizes(columns);
+
+      // fixup the columns
+      columns.each(function(index) {
+
+        // layout the chart (force flex if we are in a tabset)
+        var result = layoutChart($(this), isTabset);
+
+        // update flexHeight state
+        if (!result.flex)
+          haveFlexHeight = false;
+
+        // update state
+        if (result.notes)
+          haveNotes = true;
+
+        // set the column flex based on the figure width
+        // (value boxes will just get the default figure width)
+        var chartWidth = figureSizes[index].width;
+        setFlex($(this), chartWidth + ' ' + chartWidth + ' 0px');
+
+      });
+
+      // remove empty chart note divs
+      if (isTabset)
+        $(this).find('.chart-notes').filter(function() {
+            return $(this).html() === "&nbsp;";
+        }).remove();
+      if (!haveNotes)
+        $(this).find('.chart-notes').remove();
+
+       // make it a flexbox row
+      if (haveFlexHeight)
+        $(this).addClass('dashboard-row-flex');
+
+      // now we can set the height on all the wrappers (based on maximum
+      // figure height + room for title and notes, or data-height on the
+      // container if specified). However, don't do this if there is
+      // no flex on any of the constituent columns
+      var flexHeight = null;
+      var dataHeight = parseInt($(this).attr('data-height'));
+      if (dataHeight)
+        flexHeight = adjustedHeight(dataHeight, columns.first());
+      else if (haveFlexHeight)
+        flexHeight = maxChartHeight(figureSizes, columns);
+      if (flexHeight) {
+        if (fillPage)
+          setFlex($(this), flexHeight + ' ' + flexHeight + ' 0px');
+        else {
+          $(this).css('height', flexHeight + 'px');
+          setFlex($(this), '0 0 ' + flexHeight + 'px');
+        }
+      }
+
+    });
+  }
+
+  function layoutPageByColumns(page, fillPage) {
+
+    // column orientation
+    page.addClass('dashboard-column-orientation');
+
+    // find all the level2 sections (those are the columns)
+    var columns = page.find('div.section.level2');
+
+    // if there are no level2 sections then treat the
+    // entire page as if it's a level 2 section
+    if (columns.length === 0) {
+      page.wrapInner('<div class="section level2"></div>');
+      columns = page.find('div.section.level2');
+    }
+
+    // layout each column
+    columns.each(function (index) {
+
+      // remove the h2
+      $(this).children('h2').remove();
+
+      // make it a flexbox column
+      $(this).addClass('dashboard-column');
+
+      // check for a tabset
+      var isTabset = $(this).hasClass('tabset');
+      if (isTabset)
+        layoutTabset($(this));
+
+      // find all the h3 elements
+      var rows = $(this).find('div.section.level3');
+
+      // get the figure sizes for the rows
+      var figureSizes = chartFigureSizes(rows);
+
+      // column flex is the max row width (or data-width if specified)
+      var flexWidth;
+      var dataWidth = parseInt($(this).attr('data-width'));
+      if (dataWidth)
+        flexWidth = dataWidth;
+      else
+        flexWidth = maxChartWidth(figureSizes);
+      setFlex($(this), flexWidth + ' ' + flexWidth + ' 0px');
+
+      // layout each chart
+      rows.each(function(index) {
+
+        // perform the layout
+        var result = layoutChart($(this), false);
+
+        // ice the notes if there are none
+        if (!result.notes)
+          $(this).find('.chart-notes').remove();
+
+        // set flex height based on figHeight, then adjust
+        if (result.flex) {
+          var chartHeight = figureSizes[index].height;
+          chartHeight = adjustedHeight(chartHeight, $(this));
+          if (fillPage)
+            setFlex($(this), chartHeight + ' ' + chartHeight + ' 0px');
+          else {
+            $(this).css('height', chartHeight + 'px');
+            setFlex($(this), chartHeight + ' ' + chartHeight + ' ' + chartHeight + 'px');
+          }
+        }
+      });
+    });
+  }
+
+  function chartFigureSizes(charts) {
+
+    // sizes
+    var figureSizes = new Array(charts.length);
+
+    // check each chart
+    charts.each(function(index) {
+
+      // start with default
+      figureSizes[index] = {
+        width: _options.defaultFigWidth,
+        height: _options.defaultFigHeight
+      };
+
+      // look for data-height or data-width then knit options
+      var dataWidth = parseInt($(this).attr('data-width'));
+      var dataHeight = parseInt($(this).attr('data-height'));
+      var knitrOptions = $(this).find('.knitr-options:first');
+      var knitrWidth, knitrHeight;
+      if (knitrOptions) {
+        knitrWidth = parseInt(knitrOptions.attr('data-fig-width'));
+        knitrHeight =  parseInt(knitrOptions.attr('data-fig-height'));
+      }
+
+      // width
+      if (dataWidth)
+        figureSizes[index].width = dataWidth;
+      else if (knitrWidth)
+        figureSizes[index].width = knitrWidth;
+
+      // height
+      if (dataHeight)
+        figureSizes[index].height = dataHeight;
+      else if (knitrHeight)
+        figureSizes[index].height = knitrHeight;
+    });
+
+    // return sizes
+    return figureSizes;
+  }
+
+  function maxChartHeight(figureSizes, charts) {
+
+    // first compute the maximum height
+    var maxHeight = _options.defaultFigHeight;
+    for (var i = 0; i<figureSizes.length; i++)
+      if (figureSizes[i].height > maxHeight)
+        maxHeight = figureSizes[i].height;
+
+    // now add offests for chart title and chart notes
+    if (charts.length)
+      maxHeight = adjustedHeight(maxHeight, charts.first());
+
+    return maxHeight;
+  }
+
+  function adjustedHeight(height, chart) {
+    if (chart.length > 0) {
+      var chartTitle = chart.find('.chart-title');
+      if (chartTitle.length)
+        height += chartTitle.first().outerHeight();
+      var chartNotes = chart.find('.chart-notes');
+      if (chartNotes.length)
+        height += chartNotes.first().outerHeight();
+    }
+    return height;
+  }
+
+  function maxChartWidth(figureSizes) {
+    var maxWidth = _options.defaultFigWidth;
+    for (var i = 0; i<figureSizes.length; i++)
+      if (figureSizes[i].width > maxWidth)
+        maxWidth = figureSizes[i].width;
+    return maxWidth;
+  }
+
+  // layout a chart
+  function layoutChart(chart, forceFlex) {
+
+    // state to return
+    var result = {
+      notes: false,
+      flex: false
+    };
+
+    // extract the title
+    var title = extractTitle(chart);
+
+    // find components that apply to this container
+    var components = componentsFind(chart);
+
+    // if it's a custom component then call it and return
+    var customComponents = componentsCustom(components);
+    if (customComponents.length) {
+      componentsLayout(customComponents, title, chart);
+      result.notes = false;
+      result.flex = forceFlex || componentsFlex(customComponents);
+      return result;
+    }
+
+    // put all the content in a chart wrapper div
+    chart.addClass('chart-wrapper');
+    chart.wrapInner('<div class="chart-stage"></div>');
+    var chartContent = chart.children('.chart-stage');
+
+    // flex the content if appropriate
+    result.flex = forceFlex || componentsFlex(components);
+    if (result.flex) {
+      // add flex classes
+      chart.addClass('chart-wrapper-flex');
+      chartContent.addClass('chart-stage-flex');
+
+      // additional shim to break out of flexbox sizing
+      chartContent.wrapInner('<div class="chart-shim"></div>');
+      chartContent = chartContent.children('.chart-shim');
+    }
+
+    // set custom data-padding attribute
+    var pad = chart.attr('data-padding');
+    if (pad) {
+      if (pad === "0")
+        chart.addClass('no-padding');
+      else {
+        pad = pad + 'px';
+        chartContent.css('left', pad)
+                    .css('top', pad)
+                    .css('right', pad)
+                    .css('bottom', pad)
+      }
+    }
+
+    // call compoents
+    componentsLayout(components, title, chartContent);
+
+    // also activate components on shiny output
+    findShinyOutput(chartContent).on('shiny:value',
+      function(event) {
+        var element = $(event.target);
+        setTimeout(function() {
+
+          // see if we opted out of flex based on our output (for shiny
+          // we can't tell what type of output we have until after the
+          // value is bound)
+          var components = componentsFind(element);
+          var flex = forceFlex || componentsFlex(components);
+          if (!flex) {
+            chart.css('height', "");
+            setFlex(chart, "");
+            chart.removeClass('chart-wrapper-flex');
+            chartContent.removeClass('chart-stage-flex');
+            chartContent.children().unwrap();
+          }
+
+          // perform layout
+          componentsLayout(components, title, element.parent());
+        }, 10);
+      });
+
+    // add the title
+    var chartTitle = $('<div class="chart-title"></div>');
+    chartTitle.html(title);
+    chart.prepend(chartTitle);
+
+    // add the notes section
+    var chartNotes = $('<div class="chart-notes"></div>');
+    chartNotes.html('&nbsp;');
+    chart.append(chartNotes);
+
+    // attempt to extract notes if we have a component
+    if (components.length)
+      result.notes = extractChartNotes(chartContent, chartNotes);
+
+    // return result
+    return result;
+  }
+
+  // build a tabset from a section div with the .tabset class
+  function layoutTabset(tabset) {
+
+    // check for fade option
+    var fade = tabset.hasClass("tabset-fade");
+    var navClass = "nav-tabs";
+
+    // determine the heading level of the tabset and tabs
+    var match = tabset.attr('class').match(/level(\d) /);
+    if (match === null)
+      return;
+    var tabsetLevel = Number(match[1]);
+    var tabLevel = tabsetLevel + 1;
+
+    // find all subheadings immediately below
+    var tabs = tabset.find("div.section.level" + tabLevel);
+    if (!tabs.length)
+      return;
+
+    // create tablist and tab-content elements
+    var tabList = $('<ul class="nav ' + navClass + '" role="tablist"></ul>');
+    $(tabs[0]).before(tabList);
+    var tabContent = $('<div class="tab-content"></div>');
+    $(tabs[0]).before(tabContent);
+
+    // build the tabset
+    tabs.each(function(i) {
+
+      // get the tab div
+      var tab = $(tabs[i]);
+
+      // get the id then sanitize it for use with bootstrap tabs
+      var id = tab.attr('id');
+
+      // sanitize the id for use with bootstrap tabs
+      id = id.replace(/[.\/?&!#<>]/g, '').replace(/\s/g, '_');
+      tab.attr('id', id);
+
+      // get the heading element within it and grab it's text
+      var heading = tab.find('h' + tabLevel + ':first');
+      var headingText = heading.html();
+
+      // build and append the tab list item
+      var a = $('<a role="tab" data-toggle="tab">' + headingText + '</a>');
+      a.attr('href', '#' + id);
+      a.attr('aria-controls', id);
+      var li = $('<li role="presentation"></li>');
+      li.append(a);
+      if (i === 0)
+        li.attr('class', 'active');
+      tabList.append(li);
+
+      // set it's attributes
+      tab.attr('role', 'tabpanel');
+      tab.addClass('tab-pane');
+      tab.addClass('tabbed-pane');
+      tab.addClass('no-title');
+      if (fade)
+        tab.addClass('fade');
+      if (i === 0) {
+        tab.addClass('active');
+        if (fade)
+          tab.addClass('in');
+      }
+
+      // move it into the tab content div
+      tab.detach().appendTo(tabContent);
+    });
+
+    // add nav-tabs-custom
+    tabset.addClass('nav-tabs-custom');
+
+    // internal layout is dashboard-column with tab-content flexing
+    tabset.addClass('dashboard-column');
+    setFlex(tabContent, 1);
+  }
+
+  // one time global initialization for components
+  function componentsInit(dashboardContainer) {
+    for (var i=0; i<window.FlexDashboardComponents.length; i++) {
+      var component = window.FlexDashboardComponents[i];
+      if (component.init)
+        component.init(dashboardContainer);
+    }
+  }
+
+  // find components that apply within a container
+  function componentsFind(container) {
+
+    // look for components
+    var components = [];
+    for (var i=0; i<window.FlexDashboardComponents.length; i++) {
+      var component = window.FlexDashboardComponents[i];
+      if (component.find(container).length)
+        components.push(component);
+    }
+
+    // if there were none then use a special flowing content component
+    // that just adds a scrollbar in fillPage mode
+    if (components.length == 0) {
+      components.push({
+        find: function(container) {
+          return container;
+        },
+
+        flex: function(fillPage) {
+          return fillPage;
+        },
+
+        layout: function(title, container, element, fillPage) {
+          if (fillPage) {
+            container.addClass('flowing-content-shim');
+            container.addClass('flowing-content-container');
+          }
+        }
+      });
+    }
+
+    return components;
+  }
+
+  // if there is a custom component then pick it out
+  function componentsCustom(components) {
+    var customComponent = [];
+    for (var i=0; i<components.length; i++)
+      if (components[i].type === "custom") {
+        customComponent.push(components[i]);
+        break;
+      }
+    return customComponent;
+  }
+
+  // query all components for flex
+  function componentsFlex(components) {
+
+    // no components at all means no flex
+    if (components.length === 0)
+      return false;
+
+    // otherwise query components (assume true unless we see false)
+    var isMobile = isMobilePhone();
+    for (var i=0; i<components.length; i++)
+      if (components[i].flex && !components[i].flex(_options.fillPage))
+        return false;
+    return true;
+  }
+
+  // layout all components
+  function componentsLayout(components, title, container) {
+    var isMobile = isMobilePhone();
+    for (var i=0; i<components.length; i++) {
+      var element = components[i].find(container);
+      if (components[i].layout) {
+        // call layout (don't call other components if it returns false)
+        var result = components[i].layout(title, container, element, _options.fillPage);
+        if (result === false)
+          return;
+      }
+    }
+  }
+
+  // get a reference to the h3, discover it's inner html, and remove it
+  function extractTitle(container) {
+    var h3 = container.children('h3').first();
+    var title = '';
+    if (!container.hasClass('no-title'))
+      title = h3.html();
+    h3.remove();
+    return title;
+  }
+
+  // extract chart notes
+  function extractChartNotes(chartContent, chartNotes) {
+    // look for a terminating blockquote or image caption
+    var blockquote = chartContent.children('blockquote:last-child');
+    var caption = chartContent.children('div.image-container')
+                              .children('p.caption');
+    if (blockquote.length) {
+      chartNotes.html(blockquote.children('p:first-child').html());
+      blockquote.remove();
+      return true;
+    } else if (caption.length) {
+      chartNotes.html(caption.html());
+      caption.remove();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function findShinyOutput(chartContent) {
+    return chartContent.find('.shiny-text-output, .shiny-html-output');
+  }
+
+  // safely detect rendering on a mobile phone
+  function isMobilePhone() {
+    try
+    {
+      return ! window.matchMedia("only screen and (min-width: 768px)").matches;
+    }
+    catch(e) {
+      return false;
+    }
+  }
+
+  function isFillPage() {
+    return _options.fillPage;
+  }
+
+  // detect portrait mode
+  function isPortrait() {
+    return ($(window).width() < $(window).height());
+  }
+
+  // safely detect rendering on a tablet
+  function isTablet() {
+    try
+    {
+      return window.matchMedia("only screen and (min-width: 769px) and (max-width: 992px)").matches;
+    }
+    catch(e) {
+      return false;
+    }
+  }
+
+  // test whether this is a shiny doc
+  function isShinyDoc() {
+    return (typeof(window.Shiny) !== "undefined" && !!window.Shiny.outputBindings);
+  }
+
+  // set flex using vendor specific prefixes
+  function setFlex(el, flex) {
+    el.css('-webkit-box-flex', flex)
+      .css('-webkit-flex', flex)
+      .css('-ms-flex', flex)
+      .css('flex', flex);
+  }
+
+  // support bookmarking of pages
+  function handleLocationHash() {
+
+    // restore tab/page from bookmark
+    var hash = window.location.hash;
+    if (hash.length > 0)
+      $('ul.nav a[href="' + hash + '"]').tab('show');
+    FlexDashboardUtils.manageActiveNavbarMenu();
+
+    // navigate to a tab when the history changes
+    window.addEventListener("popstate", function(e) {
+      var hash = window.location.hash;
+      var activeTab = $('ul.nav a[href="' + hash + '"]');
+      if (activeTab.length) {
+        activeTab.tab('show');
+      } else {
+        $('ul.nav a:first').tab('show');
+      }
+      FlexDashboardUtils.manageActiveNavbarMenu();
+    });
+
+    // add a hash to the URL when the user clicks on a tab/page
+    $('.navbar-nav a[data-toggle="tab"]').on('click', function(e) {
+      var baseUrl = FlexDashboardUtils.urlWithoutHash(window.location.href);
+      var hash = FlexDashboardUtils.urlHash($(this).attr('href'));
+      var href = baseUrl + hash;
+      FlexDashboardUtils.setLocation(href);
+    });
+
+    // handle clicks of other links that should activate pages
+    var navPages = $('ul.navbar-nav li a[data-toggle=tab]');
+    navPages.each(function() {
+      var href =  $(this).attr('href');
+      var links = $('a[href="' + href + '"][data-toggle!=tab]');
+      links.each(function() {
+        $(this).on('click', function(e) {
+          window.FlexDashboardUtils.showPage(href);
+        });
+      });
+    });
+  }
+
+  // tweak Prism highlighting
+  function initPrismHighlighting() {
+
+    if (window.Prism) {
+      Prism.languages.insertBefore('r', 'comment', {
+        'heading': [
+          {
+            // title 1
+        	  // =======
+
+        	  // title 2
+        	  // -------
+        	  pattern: /\w+.*(?:\r?\n|\r)(?:====+|----+)/,
+            alias: 'operator'
+          },
+          {
+            // ### title 3
+            pattern: /(^\s*)###[^#].+/m,
+            lookbehind: true,
+            alias: 'operator'
+          }
+        ]
+      });
+
+      // prism highlight
+      Prism.highlightAll();
+    }
+  }
+
+
+  // get theme color
+  var themeColors = {
+    bootstrap: {
+      primary: "rgba(51, 122, 183, 0.4)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    cerulean: {
+      primary: "rgb(47, 164, 231)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    journal: {
+      primary: "rgba(235, 104, 100, 0.70)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    flatly: {
+      primary: "rgba(44, 62, 80, 0.70)",
+      info: "rgba(52, 152, 219, 0.70)",
+      success: "rgba(24, 188, 156, 0.70)",
+      warning: "rgba(243, 156, 18, 0.70)",
+      danger: "rgba(231, 76, 60, 0.70)"
+    },
+    readable: {
+      primary: "rgba(69, 130, 236, 0.4)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    spacelab: {
+      primary: "rgba(68, 110, 155, 0.25)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    united: {
+      primary: "rgba(221, 72, 20, 0.30)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    cosmo: {
+      primary: "rgba(39, 128, 227, 0.7)",
+      info: "rgba(153, 84, 187, 0.7)",
+      success: "rgba(63, 182, 24, 0.7)",
+      warning: "rgba(255, 117, 24, 0.7)",
+      danger: "rgba(255, 0, 57, 0.7)"
+    },
+    lumen: {
+      primary: "rgba(21, 140, 186, 0.70)",
+      info: "rgba(117, 202, 235, 0.90)",
+      success: "rgba(40, 182, 44, 0.70)",
+      warning: "rgba(255, 133, 27, 0.70)",
+      danger: "rgba(255, 65, 54, 0.70)"
+    },
+    paper: {
+      primary: "rgba(33, 150, 243, 0.35)",
+      info: "rgb(225, 190, 231)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(255, 224, 178)",
+      danger: "rgb(249, 189, 187)"
+    },
+    sandstone: {
+      primary: "rgba(50, 93, 136, 0.3)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    simplex: {
+      primary: "rgba(217, 35, 15, 0.25)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    },
+    yeti: {
+      primary: "rgba(0, 140, 186, 0.298039)",
+      info: "rgb(217, 237, 247)",
+      success: "rgb(223, 240, 216)",
+      warning: "rgb(252, 248, 227)",
+      danger: "rgb(242, 222, 222)"
+    }
+  }
+  function themeColor(color) {
+    return themeColors[_options.theme][color];
+  }
+
+  FlexDashboard.prototype = {
+    constructor: FlexDashboard,
+    init: init,
+    isMobilePhone: isMobilePhone,
+    isFillPage: isFillPage,
+    themeColor: themeColor
+  };
+
+  return FlexDashboard;
+
+})();
+
+// utils
+window.FlexDashboardUtils = {
+  resizableImage: function(img) {
+    var src = img.attr('src');
+    var url = 'url("' + src + '")';
+    img.parent().css('background', url)
+                .css('background-size', 'contain')
+                .css('background-repeat', 'no-repeat')
+                .css('background-position', 'center')
+                .addClass('image-container');
+  },
+  setLocation: function(href) {
+    if (history && history.pushState) {
+      history.pushState(null, null, href);
+    } else {
+      window.location.replace(href);
+    }
+    setTimeout(function() {
+        window.scrollTo(0, 0);
+    }, 10);
+    this.manageActiveNavbarMenu();
+  },
+  showPage: function(href) {
+    $('ul.navbar-nav li a[href="' + href + '"]').tab('show');
+    var baseUrl = this.urlWithoutHash(window.location.href);
+    var loc = baseUrl + href;
+    this.setLocation(loc);
+  },
+  showLinkedValue: function(href) {
+    // check for a page link
+    if ($('ul.navbar-nav li a[data-toggle=tab][href="' + href + '"]').length > 0)
+      this.showPage(href);
+    else
+      window.open(href);
+  },
+  urlWithoutHash: function(url) {
+    var hashLoc = url.indexOf('#');
+    if (hashLoc != -1)
+      return url.substring(0, hashLoc);
+    else
+      return url;
+  },
+  urlHash: function(url) {
+    var hashLoc = url.indexOf('#');
+    if (hashLoc != -1)
+      return url.substring(hashLoc);
+    else
+      return "";
+  },
+  manageActiveNavbarMenu: function () {
+    // remove active from anyone currently active
+    $('.navbar ul.nav').find('li').removeClass('active');
+    // find the active tab
+    var activeTab = $('.dashboard-page-wrapper.tab-pane.active');
+    if (activeTab.length > 0) {
+      var tabId = activeTab.attr('id');
+      if (tabId)
+        $(".navbar ul.nav a[href='#" + tabId + "']").parents('li').addClass('active');
+    }
+  }
+};
+
+window.FlexDashboard = new FlexDashboard();
+
+// empty content
+window.FlexDashboardComponents.push({
+  find: function(container) {
+    if (container.find('p').length == 0)
+      return container;
+    else
+      return $();
+  }
+})
+
+// plot image
+window.FlexDashboardComponents.push({
+
+  find: function(container) {
+    return container.children('p')
+                    .children('img:only-child');
+  },
+
+  layout: function(title, container, element, fillPage) {
+    FlexDashboardUtils.resizableImage(element);
+  }
+});
+
+// plot image (figure style)
+window.FlexDashboardComponents.push({
+
+  find: function(container) {
+    return container.children('div.figure').children('img');
+  },
+
+  layout: function(title, container, element, fillPage) {
+    FlexDashboardUtils.resizableImage(element);
+  }
+});
+
+// htmlwidget
+window.FlexDashboardComponents.push({
+
+  init: function(dashboardContainer) {
+    // trigger "shown" after initial layout to force static htmlwidgets
+    // in runtime: shiny to be resized after the dom has been transformed
+    dashboardContainer.on('flexdashboard:layoutcomplete', function(event) {
+      setTimeout(function() {
+        dashboardContainer.trigger('shown');
+      }, 200);
+    });
+  },
+
+  find: function(container) {
+    return container.children('div[id^="htmlwidget-"],div.html-widget');
+  }
+});
+
+// gauge
+window.FlexDashboardComponents.push({
+
+  find: function(container) {
+    return container.children('div.html-widget.gauge');
+  },
+
+  flex: function(fillPage) {
+    return false;
+  },
+
+  layout: function(title, container, element, fillPage) {
+
+
+  }
+
+});
+
+// shiny output
+window.FlexDashboardComponents.push({
+  find: function(container) {
+    return container.children('div[class^="shiny-"]');
+  }
+});
+
+// datatables
+window.FlexDashboardComponents.push({
+  find: function(container) {
+    return container.find('.datatables');
+  },
+  flex: function(fillPage) {
+    return fillPage;
+  }
+});
+
+// bootstrap table
+window.FlexDashboardComponents.push({
+
+  find: function(container) {
+    var bsTable = container.find('table.table');
+    if (bsTable.length !== 0)
+      return bsTable;
+    else
+      return container.find('tr.header').parent('thead').parent('table');
+  },
+
+  flex: function(fillPage) {
+    return fillPage;
+  },
+
+  layout: function(title, container, element, fillPage) {
+
+    // alias variables
+    var bsTable = element;
+
+    // fixup xtable generated tables with a proper thead
+    var headerRow = bsTable.find('tbody > tr:first-child > th').parent();
+    if (headerRow.length > 0) {
+      var thead = $('<thead></thead>');
+      bsTable.prepend(thead);
+      headerRow.detach().appendTo(thead);
+    }
+
+    // improve appearance
+    container.addClass('bootstrap-table');
+
+    // for fill page provide scrolling w/ sticky headers
+    if (fillPage) {
+      // force scrollbar on overflow
+      container.addClass('flowing-content-shim');
+
+      // stable table headers when scrolling
+      bsTable.stickyTableHeaders({
+        scrollableArea: container
+      });
+    }
+  }
+});
+
+// embedded shiny app
+window.FlexDashboardComponents.push({
+
+  find: function(container) {
+    return container.find('iframe.shiny-frame');
+  },
+
+  flex: function(fillPage) {
+    return fillPage;
+  },
+
+  layout: function(title, container, element, fillPage) {
+    if (fillPage) {
+      element.attr('height', '100%');
+    } else {
+      // provide default height if necessary
+      var height = element.get(0).style.height;
+      if (!height)
+        height = element.attr('height');
+      if (!height)
+        element.attr('height', 500);
+    }
+  }
+});
+
+// shiny fillRow or fillCol
+window.FlexDashboardComponents.push({
+
+  find: function(container) {
+    return container.find('.flexfill-container');
+  },
+
+  flex: function(fillPage) {
+    return fillPage;
+  },
+
+  layout: function(title, container, element, fillPage) {
+    if (fillPage)
+      element.css('height', '100%');
+    else {
+      // provide default height if necessary
+      var height = element.get(0).style.height;
+      if (height === "100%" || height === "auto" || height === "initial" ||
+          height === "inherit" || !height) {
+        element.css('height', 500);
+      }
+    }
+  }
+});
+
+// valueBox
+window.FlexDashboardComponents.push({
+
+  type: "custom",
+
+  find: function(container) {
+    if (container.find('span.value-output, .shiny-valuebox-output').length)
+      return container;
+    else
+      return $();
+  },
+
+  flex: function(fillPage) {
+    return false;
+  },
+
+  layout: function(title, container, element, fillPage) {
+
+    // alias variables
+    var chartTitle = title;
+    var valueBox = element;
+
+    // add value-box class to container
+    container.addClass('value-box');
+
+    // value paragraph
+    var value = $('<p class="value"></p>');
+
+    // if we have shiny-text-output then just move it in
+    var valueOutputSpan = [];
+    var shinyOutput = valueBox.find('.shiny-valuebox-output').detach();
+    if (shinyOutput.length) {
+      valueBox.children().remove();
+      shinyOutput.html("&mdash;");
+      value.append(shinyOutput);
+    } else {
+      // extract the value (remove leading vector index)
+      var chartValue = valueBox.text().trim();
+      chartValue = chartValue.replace("[1] ", "");
+      valueOutputSpan = valueBox.find('span.value-output').detach();
+      valueBox.children().remove();
+      value.text(chartValue);
+    }
+
+    // caption
+    var caption = $('<p class="caption"></p>');
+    caption.html(chartTitle);
+
+    // build inner div for value box and add it
+    var inner = $('<div class="inner"></div>');
+    inner.append(value);
+    inner.append(caption);
+    valueBox.append(inner);
+
+    // add icon if specified
+    var icon = $('<div class="icon"><i></i></div>');
+    valueBox.append(icon);
+    function setIcon(chartIcon) {
+      var iconLib = "";
+      var components = chartIcon.split("-");
+      if (components.length > 1)
+        iconLib = components[0];
+      icon.children('i').attr('class', iconLib + ' ' + chartIcon);
+    }
+    var chartIcon = valueBox.attr('data-icon');
+    if (chartIcon)
+      setIcon(chartIcon);
+
+    // set color based on data-background if necessary
+    var dataBackground = valueBox.attr('data-background');
+    if (dataBackground)
+      valueBox.css('background-color', bgColor);
+    else {
+      // default to bg-primary if no other background is specified
+      if (!valueBox.hasClass('bg-primary') &&
+          !valueBox.hasClass('bg-info') &&
+          !valueBox.hasClass('bg-warning') &&
+          !valueBox.hasClass('bg-success') &&
+          !valueBox.hasClass('bg-danger')) {
+        valueBox.addClass('bg-primary');
+      }
+    }
+
+    // handle data attributes in valueOutputSpan
+    function handleValueOutput(valueOutput) {
+
+      // caption
+      var dataCaption = valueOutput.attr('data-caption');
+      if (dataCaption)
+        caption.html(dataCaption);
+
+      // icon
+      var dataIcon = valueOutput.attr('data-icon');
+      if (dataIcon)
+        setIcon(dataIcon);
+
+      // color
+      var dataColor = valueOutput.attr('data-color');
+      if (dataColor) {
+        if (dataColor.indexOf('bg-') === 0) {
+          valueBox.css('background-color', '');
+          if (!valueBox.hasClass(dataColor)) {
+             valueBox.removeClass('bg-primary bg-info bg-warning bg-danger bg-success');
+             valueBox.addClass(dataColor);
+          }
+        } else {
+          valueBox.removeClass('bg-primary bg-info bg-warning bg-danger bg-success');
+          valueBox.css('background-color', dataColor);
+        }
+      }
+
+      // url
+      var dataHref = valueOutput.attr('data-href');
+      if (dataHref) {
+        valueBox.addClass('linked-value');
+        valueBox.on('click', function(e) {
+          window.FlexDashboardUtils.showLinkedValue(dataHref);
+        });
+      }
+    }
+
+    // check for a valueOutputSpan
+    if (valueOutputSpan.length > 0) {
+      handleValueOutput(valueOutputSpan);
+    }
+
+    // if we have a shinyOutput then bind a listener to handle
+    // new valueOutputSpan values
+    shinyOutput.on('shiny:value',
+      function(event) {
+        var element = $(event.target);
+        setTimeout(function() {
+          var valueOutputSpan = element.find('span.value-output');
+          if (valueOutputSpan.length > 0)
+            handleValueOutput(valueOutputSpan);
+        }, 10);
+      }
+    );
+  }
+});
+
+
+</script>
+
+<div id="dashboard-container">
+
+<div id="hexmaps" class="section level1 storyboard">
+<h1>Hexmaps</h1>
+<div id="hello-hexmaps-a-hexagonal-cartogram-of-new-zealand-electorates-2014-2017" class="section level3">
+<h3>Hello HexMaps: a hexagonal cartogram of New Zealand electorates (2014-2017)</h3>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+<div id="htmlwidget-30610593acb5fc760f97" style="width:576px;height:460.8px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-30610593acb5fc760f97">{"x":{"options":{"minZoom":5.8,"maxZoom":5.8,"crs":{"crsClass":"L.CRS.Simple","code":null,"proj4def":null,"projectedBounds":null,"options":{}},"dragging":false,"zoomControl":false,"tap":false,"attributionControl":false},"calls":[{"method":"addPolygons","args":[[[[{"lng":[169.702105274508,170.1246037623,170.10660536396,169.66071205303,169.236094809946,169.259480922571,169.702105274508],"lat":[-45.0754459315402,-45.2635784396633,-45.6165166859479,-45.7810336921544,-45.5911231550793,-45.2384936610553,-45.0754459315402]}]],[[{"lng":[170.565096915461,170.990715930153,170.978127999977,170.5345041312,170.10660536396,170.1246037623,170.565096915461],"lat":[-45.0971238635802,-45.2821106772783,-45.6352772022596,-45.8032487837071,-45.6165166859479,-45.2635784396633,-45.0971238635802]}]],[[{"lng":[170.159618341522,170.579974180143,170.565096915461,170.1246037623,169.702105274508,169.722235357027,170.159618341522],"lat":[-44.5576198330577,-44.744022579185,-45.0971238635802,-45.2635784396633,-45.0754459315402,-44.7226083322227,-44.5576198330577]}]],[[{"lng":[171.015204254821,171.438526248438,171.428920258076,170.990715930153,170.565096915461,170.579974180143,171.015204254821],"lat":[-44.5757038084484,-44.7589943059291,-45.1122800626199,-45.2821106772783,-45.0971238635802,-44.744022579185,-44.5757038084484]}]],[[{"lng":[171.45721650538,171.878228196785,171.871452273198,171.438526248438,171.015204254821,171.027114791809,171.45721650538],"lat":[-44.0523522010941,-44.2339947825102,-44.5873771590143,-44.7589943059291,-44.5757038084484,-44.2224635906631,-44.0523522010941]}]],[[{"lng":[171.891414014157,172.310105783498,172.306014455974,171.878228196785,171.45721650538,171.466308367086,171.891414014157],"lat":[-43.5271617764036,-43.7072042509248,-44.060661793914,-44.2339947825102,-44.0523522010941,-43.6989959360359,-43.5271617764036]}]],[[{"lng":[172.318068572797,172.734434157375,172.732888077143,172.310105783498,171.891414014157,171.897829165714,172.318068572797],"lat":[-43.0002224473021,-43.1787120305633,-43.5322243762815,-43.7072042509248,-43.5271617764036,-43.1737112022776,-43.0002224473021]}]],[[{"lng":[172.737443643486,173.151479855063,173.152345524331,172.734434157375,172.318068572797,172.321943150452,172.737443643486],"lat":[-42.4716214408634,-42.6486047440667,-43.0021525463114,-43.1787120305633,-43.0002224473021,-42.6466982281545,-42.4716214408634]}]],[[{"lng":[173.149794588863,173.561501050749,173.56465056106,173.151479855063,172.737443643486,172.738908205155,173.149794588863],"lat":[-41.9414434181818,-42.1169664501883,-42.4705313122429,-42.6486047440667,-42.4716214408634,-42.1180432364119,-41.9414434181818]}]],[[{"lng":[172.741759726499,173.148974356629,173.149794588863,172.738908205155,172.329486111274,172.333157337278,172.741759726499],"lat":[-41.4108211355832,-41.5878299427172,-41.9414434181818,-42.1180432364119,-41.9395832860758,-41.5859926235137,-41.4108211355832]}]],[[{"lng":[172.329486111274,172.738908205155,172.737443643486,172.321943150452,171.910316502613,171.916393480762,172.329486111274],"lat":[-41.9395832860758,-42.1180432364119,-42.4716214408634,-42.6466982281545,-42.4667420679134,-42.1132235799893,-41.9395832860758]}]],[[{"lng":[171.910316502613,172.321943150452,172.318068572797,171.897829165714,171.484003675069,171.492614038617,171.910316502613],"lat":[-42.4667420679134,-42.6466982281545,-43.0002224473021,-43.1737112022776,-42.9922132014938,-42.6387868286633,-42.4667420679134]}]],[[{"lng":[171.484003675069,171.897829165714,171.891414014157,171.466308367086,171.050292798609,171.061569497352,171.484003675069],"lat":[-42.9922132014938,-43.1737112022776,-43.5271617764036,-43.6989959360359,-43.5159099178256,-43.162596597717,-42.9922132014938]}]],[[{"lng":[171.050292798609,171.466308367086,171.45721650538,171.027114791809,170.608921235472,170.623002767403,171.050292798609],"lat":[-43.5159099178256,-43.6989959360359,-44.0523522010941,-44.2224635906631,-44.037742833762,-43.6845645616298,-43.5159099178256]}]],[[{"lng":[170.608921235472,171.027114791809,171.015204254821,170.579974180143,170.159618341522,170.176648991065,170.608921235472],"lat":[-44.037742833762,-44.2224635906631,-44.5757038084484,-44.744022579185,-44.5576198330577,-44.2045997331276,-44.037742833762]}]],[[{"lng":[173.152345524331,173.571122391795,173.574447197377,173.154124597749,172.732888077143,172.734434157375,173.152345524331],"lat":[-43.0021525463114,-43.177594765221,-43.5310933092866,-43.7091823303595,-43.5322243762815,-43.1787120305633,-43.0021525463114]}]],[[{"lng":[173.135274442632,173.506746308234,173.508922528609,173.136438882006,172.763357697957,172.764369653344,173.135274442632],"lat":[-34.5110373360573,-34.6870820142825,-35.0410991190627,-35.2190973063165,-35.0419356805503,-34.687907691613,-34.5110373360573]}]],[[{"lng":[173.876042274971,174.249010093857,174.254372535004,173.883582065228,173.508922528609,173.506746308234,173.876042274971],"lat":[-34.5079711809721,-34.6817355149237,-35.035682146917,-35.2159497816502,-35.0410991190627,-34.6870820142825,-34.5079711809721]}]],[[{"lng":[174.254372535004,174.630524632415,174.637662772467,174.265381993567,173.887451712013,173.883582065228,174.254372535004],"lat":[-35.035682146917,-35.2081934432006,-35.5620496135174,-35.7435110590152,-35.5699074811088,-35.2159497816502,-35.035682146917]}]],[[{"lng":[175.38749737216,175.76831268774,175.780658830212,175.408849207251,175.026083001827,175.017080593185,175.38749737216],"lat":[-35.5495284177553,-35.7183082109013,-36.0718626119279,-36.2568466865543,-36.08700302805,-35.7332543324192,-35.5495284177553]}]],[[{"lng":[173.508922528609,173.883582065228,173.887451712013,173.513390481321,173.137036509051,173.136438882006,173.508922528609],"lat":[-35.0410991190627,-35.2159497816502,-35.5699074811088,-35.7490707890183,-35.5730962118941,-35.2190973063165,-35.0410991190627]}]],[[{"lng":[173.887451712013,174.265381993567,174.271032355207,173.895396389013,173.515683571733,173.513390481321,173.887451712013],"lat":[-35.5699074811088,-35.7435110590152,-36.0973931310894,-36.2777591954495,-36.1030251731585,-35.7490707890183,-35.5699074811088]}]],[[{"lng":[174.637662772467,175.017080593185,175.026083001827,174.65231780017,174.271032355207,174.265381993567,174.637662772467],"lat":[-35.5620496135174,-35.7332543324192,-36.08700302805,-36.2696956061575,-36.0973931310894,-35.7435110590152,-35.5620496135174]}]],[[{"lng":[175.026083001827,175.408849207251,175.419807477374,175.044565563613,174.659839203615,174.65231780017,175.026083001827],"lat":[-36.08700302805,-36.2568466865543,-36.6104702439106,-36.7944315876697,-36.6234852078004,-36.2696956061575,-36.08700302805]}]],[[{"lng":[174.271032355207,174.65231780017,174.659839203615,174.282633054376,173.899473869635,173.895396389013,174.271032355207],"lat":[-36.0973931310894,-36.2696956061575,-36.6234852078004,-36.8050920118316,-36.6316530294735,-36.2777591954495,-36.0973931310894]}]],[[{"lng":[174.659839203615,175.044565563613,175.054051494576,174.675281555439,174.288587022976,174.282633054376,174.659839203615],"lat":[-36.6234852078004,-36.7944315876697,-37.1481112068699,-37.3309970807213,-37.1589086292711,-36.8050920118316,-36.6234852078004]}]],[[{"lng":[175.419807477374,175.806005926302,175.819014789071,175.442305838214,175.054051494576,175.044565563613,175.419807477374],"lat":[-36.6104702439106,-36.7788973918116,-37.1323774480601,-37.3176454992107,-37.1481112068699,-36.7944315876697,-36.6104702439106]}]],[[{"lng":[175.780658830212,176.16481267247,176.179197544805,175.806005926302,175.419807477374,175.408849207251,175.780658830212],"lat":[-36.0718626119279,-36.2392220425792,-36.5926179291189,-36.7788973918116,-36.6104702439106,-36.2568466865543,-36.0718626119279]}]],[[{"lng":[175.819014789071,176.208730513297,176.223887956257,175.845723755737,175.453853064868,175.442305838214,175.819014789071],"lat":[-37.1323774480601,-37.2993316435179,-37.6526491023112,-37.8392620912795,-37.6711969213914,-37.3176454992107,-37.1323774480601]}]],[[{"lng":[175.054051494576,175.442305838214,175.453853064868,175.073527714749,174.683207409528,174.675281555439,175.054051494576],"lat":[-37.1481112068699,-37.3176454992107,-37.6711969213914,-37.8554005242311,-37.6847191444989,-37.3309970807213,-37.1481112068699]}]],[[{"lng":[175.453853064868,175.845723755737,175.859432455574,175.477562213669,175.083524284167,175.073527714749,175.453853064868],"lat":[-37.6711969213914,-37.8392620912795,-38.1926663619588,-38.3782266807776,-38.2090099900838,-37.8554005242311,-37.6711969213914]}]],[[{"lng":[174.288587022976,174.675281555439,174.683207409528,174.300811661824,173.912142311399,173.90784549976,174.288587022976],"lat":[-37.1589086292711,-37.3309970807213,-37.6847191444989,-37.8664757575537,-37.6932053991122,-37.3393762135831,-37.1589086292711]}]],[[{"lng":[174.683207409528,175.073527714749,175.083524284167,174.699481263584,174.307086279161,174.300811661824,174.683207409528],"lat":[-37.6847191444989,-37.8554005242311,-38.2090099900838,-38.3920950300003,-38.2202260938991,-37.8664757575537,-37.6847191444989]}]],[[{"lng":[174.307086279161,174.699481263584,174.70783459933,174.319970403422,173.925493509457,173.920964868404,174.307086279161],"lat":[-38.2202260938991,-38.3920950300003,-38.7457486589128,-38.9276598991528,-38.7545624129603,-38.4007985720072,-38.2202260938991]}]],[[{"lng":[173.925493509457,174.319970403422,174.326584206369,173.934793070902,173.538228672466,173.535544490466,173.925493509457],"lat":[-38.7545624129603,-38.9276598991528,-39.2813432101606,-39.4620242551217,-39.2876566934885,-38.933894755201,-38.7545624129603]}]],[[{"lng":[173.538228672466,173.934793070902,173.939567145202,173.543741024573,173.145085321408,173.144347994212,173.538228672466],"lat":[-39.2876566934885,-39.4620242551217,-39.8157221316599,-39.9951153797392,-39.819435688781,-39.4656917363751,-39.2876566934885]}]],[[{"lng":[174.70783459933,175.104050719415,175.114587420104,174.72498800774,174.326584206369,174.319970403422,174.70783459933],"lat":[-38.7457486589128,-38.9161579740176,-39.2696962716804,-39.4529868196403,-39.2813432101606,-38.9276598991528,-38.7457486589128]}]],[[{"lng":[178.182021286369,178.581576808851,178.608853127435,178.232836856621,177.830742743585,177.807211851295,178.182021286369],"lat":[-38.113016497274,-38.2713804202358,-38.6235082006468,-38.817721957803,-38.6583223307929,-38.3057605026371,-38.113016497274]}]],[[{"lng":[177.830742743585,178.232836856621,178.258918998437,177.879058474797,177.474401083027,177.452175588275,177.830742743585],"lat":[-38.6583223307929,-38.817721957803,-39.1700211320156,-39.3633447913473,-39.2028678815611,-38.8501607460072,-38.6583223307929]}]],[[{"lng":[177.408875348437,177.807211851295,177.830742743585,177.452175588275,177.051386616558,177.031624419695,177.408875348437],"lat":[-38.1446510825123,-38.3057605026371,-38.6583223307929,-38.8501607460072,-38.6879745161504,-38.3350426744435,-38.1446510825123]}]],[[{"lng":[176.993121713964,177.387786298381,177.408875348437,177.031624419695,176.634614517483,176.617207129742,176.993121713964],"lat":[-37.6290898934623,-37.7918491305913,-38.1446510825123,-38.3350426744435,-38.1712078641881,-37.8180728706903,-37.6290898934623]}]],[[{"lng":[176.223887956257,176.617207129742,176.634614517483,176.255009124702,175.859432455574,175.845723755737,176.223887956257],"lat":[-37.6526491023112,-37.8180728706903,-38.1712078641881,-38.3592043066667,-38.1926663619588,-37.8392620912795,-37.6526491023112]}]],[[{"lng":[176.583291196507,176.974368666507,176.993121713964,176.617207129742,176.223887956257,176.208730513297,176.583291196507],"lat":[-37.1117192956037,-37.2760694489078,-37.6290898934623,-37.8180728706903,-37.6526491023112,-37.2993316435179,-37.1117192956037]}]],[[{"lng":[176.179197544805,176.566771763061,176.583291196507,176.208730513297,175.819014789071,175.806005926302,176.179197544805],"lat":[-36.5926179291189,-36.7585011401139,-37.1117192956037,-37.2993316435179,-37.1323774480601,-36.7788973918116,-36.5926179291189]}]],[[{"lng":[177.761365212384,178.157271135014,178.182021286369,177.807211851295,177.408875348437,177.387786298381,177.761365212384],"lat":[-37.6005373039018,-37.7606109598268,-38.113016497274,-38.3057605026371,-38.1446510825123,-37.7918491305913,-37.6005373039018]}]],[[{"lng":[176.634614517483,177.031624419695,177.051386616558,176.670356525492,176.270983014144,176.255009124702,176.634614517483],"lat":[-38.1712078641881,-38.3350426744435,-38.6879745161504,-38.8773931973135,-38.7124416848944,-38.3592043066667,-38.1712078641881]}]],[[{"lng":[175.859432455574,176.255009124702,176.270983014144,175.887580703791,175.489731896615,175.477562213669,175.859432455574],"lat":[-38.1926663619588,-38.3592043066667,-38.7124416848944,-38.8993980210543,-38.731704751427,-38.3782266807776,-38.1926663619588]}]],[[{"lng":[175.083524284167,175.477562213669,175.489731896615,175.104050719415,174.70783459933,174.699481263584,175.083524284167],"lat":[-38.2090099900838,-38.3782266807776,-38.731704751427,-38.9161579740176,-38.7457486589128,-38.3920950300003,-38.2090099900838]}]],[[{"lng":[175.489731896615,175.887580703791,175.902029606211,175.514721724249,175.114587420104,175.104050719415,175.489731896615],"lat":[-38.731704751427,-38.8993980210543,-39.2527250982449,-39.4385866134469,-39.2696962716804,-38.9161579740176,-38.731704751427]}]],[[{"lng":[177.051386616558,177.452175588275,177.474401083027,177.091965401163,176.688702992172,176.670356525492,177.051386616558],"lat":[-38.6879745161504,-38.8501607460072,-39.2028678815611,-39.3937478475715,-39.2304431070114,-38.8773931973135,-38.6879745161504]}]],[[{"lng":[176.270983014144,176.670356525492,176.688702992172,176.303783915156,175.902029606211,175.887580703791,176.270983014144],"lat":[-38.7124416848944,-38.8773931973135,-39.2304431070114,-39.4188350702131,-39.2527250982449,-38.8993980210543,-38.7124416848944]}]],[[{"lng":[176.688702992172,177.091965401163,177.112795639165,176.726377760312,176.320621993738,176.303783915156,176.688702992172],"lat":[-39.2304431070114,-39.3937478475715,-39.7465888356776,-39.9364563271924,-39.7719907135192,-39.4188350702131,-39.2304431070114]}]],[[{"lng":[175.902029606211,176.303783915156,176.320621993738,175.931701375995,175.527550320429,175.514721724249,175.902029606211],"lat":[-39.2527250982449,-39.4188350702131,-39.7719907135192,-39.9593009712168,-39.7919901500957,-39.4385866134469,-39.2527250982449]}]],[[{"lng":[175.114587420104,175.514721724249,175.527550320429,175.136225623487,174.733793891634,174.72498800774,175.114587420104],"lat":[-39.2696962716804,-39.4385866134469,-39.7919901500957,-39.9767009379492,-39.8065711765563,-39.4529868196403,-39.2696962716804]}]],[[{"lng":[174.326584206369,174.72498800774,174.733793891634,174.34016650503,173.939567145202,173.934793070902,174.326584206369],"lat":[-39.2813432101606,-39.4529868196403,-39.8065711765563,-39.98864227115,-39.8157221316599,-39.4620242551217,-39.2813432101606]}]],[[{"lng":[174.733793891634,175.136225623487,175.14733457476,174.751879188923,174.347139682911,174.34016650503,174.733793891634],"lat":[-39.8065711765563,-39.9767009379492,-40.3301670973138,-40.5136700092781,-40.34225787963,-39.98864227115,-39.8065711765563]}]],[[{"lng":[175.527550320429,175.931701375995,175.946934436078,175.553896938835,175.14733457476,175.136225623487,175.527550320429],"lat":[-39.7919901500957,-39.9593009712168,-40.3125494593802,-40.4987217926819,-40.3301670973138,-39.9767009379492,-39.7919901500957]}]],[[{"lng":[176.320621993738,176.726377760312,176.74571896826,176.355202293707,175.946934436078,175.931701375995,176.320621993738],"lat":[-39.7719907135192,-39.9364563271924,-40.2894192014883,-40.4782189755774,-40.3125494593802,-39.9593009712168,-39.7719907135192]}]],[[{"lng":[175.946934436078,176.355202293707,176.372956581932,175.978221522739,175.567424177431,175.553896938835,175.946934436078],"lat":[-40.3125494593802,-40.4782189755774,-40.8312912266355,-41.018966776536,-40.8520496491819,-40.4987217926819,-40.3125494593802]}]],[[{"lng":[175.567424177431,175.978221522739,175.994286672035,175.595210589469,175.181867859434,175.170151628103,175.567424177431],"lat":[-40.8520496491819,-41.018966776536,-41.3721352998199,-41.5586288084993,-41.3904196687494,-41.0370265621739,-40.8520496491819]}]],[[{"lng":[175.181867859434,175.595210589469,175.609479828529,175.205936976738,174.790034641515,174.780239205135,175.181867859434],"lat":[-41.3904196687494,-41.5586288084993,-41.911879865819,-42.0971321412483,-41.9275858988421,-41.5741423427086,-41.3904196687494]}]],[[{"lng":[174.368816896893,174.780239205135,174.790034641515,174.383925906034,173.970058586835,173.964747806741,174.368816896893],"lat":[-41.4029682318305,-41.5741423427086,-41.9275858988421,-42.1099941282898,-41.9374431706242,-41.5838787531156,-41.4029682318305]}]],[[{"lng":[174.761164940153,175.170151628103,175.181867859434,174.780239205135,174.368816896893,174.361462323591,174.761164940153],"lat":[-40.8671843222148,-41.0370265621739,-41.3904196687494,-41.5741423427086,-41.4029682318305,-41.0494209226578,-40.8671843222148]}]],[[{"lng":[175.14733457476,175.553896938835,175.567424177431,175.170151628103,174.761164940153,174.751879188923,175.14733457476],"lat":[-40.3301670973138,-40.4987217926819,-40.8520496491819,-41.0370265621739,-40.8671843222148,-40.5136700092781,-40.3301670973138]}]],[[{"lng":[178.182021286369,178.581576808851,178.608853127435,178.232836856621,177.830742743585,177.807211851295,178.182021286369],"lat":[-43.413016497274,-43.5713804202358,-43.9235082006468,-44.117721957803,-43.9583223307929,-43.6057605026371,-43.413016497274]}]],[[{"lng":[177.830742743585,178.232836856621,178.258918998437,177.879058474797,177.474401083027,177.452175588275,177.830742743585],"lat":[-43.9583223307929,-44.117721957803,-44.4700211320156,-44.6633447913473,-44.5028678815611,-44.1501607460072,-43.9583223307929]}]],[[{"lng":[177.408875348437,177.807211851295,177.830742743585,177.452175588275,177.051386616558,177.031624419695,177.408875348437],"lat":[-43.4446510825123,-43.6057605026371,-43.9583223307929,-44.1501607460072,-43.9879745161504,-43.6350426744435,-43.4446510825123]}]],[[{"lng":[177.051386616558,177.452175588275,177.474401083027,177.091965401163,176.688702992172,176.670356525492,177.051386616558],"lat":[-43.9879745161504,-44.1501607460072,-44.5028678815611,-44.6937478475715,-44.5304431070114,-44.1773931973135,-43.9879745161504]}]],[[{"lng":[176.688702992172,177.091965401163,177.112795639165,176.726377760312,176.320621993738,176.303783915156,176.688702992172],"lat":[-44.5304431070114,-44.6937478475715,-45.0465888356776,-45.2364563271924,-45.0719907135192,-44.7188350702131,-44.5304431070114]}]],[[{"lng":[176.993121713964,177.387786298381,177.408875348437,177.031624419695,176.634614517483,176.617207129742,176.993121713964],"lat":[-42.9290898934623,-43.0918491305912,-43.4446510825123,-43.6350426744435,-43.4712078641881,-43.1180728706903,-42.9290898934623]}]],[[{"lng":[176.583291196507,176.974368666507,176.993121713964,176.617207129742,176.223887956257,176.208730513297,176.583291196507],"lat":[-42.4117192956037,-42.5760694489078,-42.9290898934623,-43.1180728706903,-42.9526491023112,-42.5993316435179,-42.4117192956037]}]]],null,"Regions",{"lineCap":null,"lineJoin":null,"clickable":true,"pointerEvents":null,"className":"","stroke":true,"color":"#000000","weight":2,"opacity":1,"fill":true,"fillColor":["#01F9F3","#01F9F3","#01F9F3","#01F9F3","#01F9F3","#01F9F3","#01F9F3","#01F9F3","#01F9F3","#01F9F3","#01F9F3","#01F9F3","#01F9F3","#01F9F3","#01F9F3","#01F9F3","#04FC06","#04FC06","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#FF0000","#F700FB","#0207FD","#F700FB","#FDFB02","#FDFB02","#FDFB02","#F700FB","#FF0000","#FF0000","#FF0000","#FDFB02","#FF0000","#FF0000","#FF0000","#F700FB","#FDFB02","#F700FB","#FDFB02","#F700FB","#0207FD","#0207FD","#0207FD","#0207FD","#FF0006","#FF0006","#FF0006","#FF0006","#FF0006","#FF0006","#FF0006","#FDFB02","#FDFB02","#F700FB","#0207FD","#01F9F3","#FF0000","#04FC06"],"fillOpacity":0.6,"dashArray":null,"smoothFactor":1,"noClip":false},null,null,["<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Clutha-Southland<\/span><br>In South Island.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Invercargill<\/span><br>In South Island.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Waitaki<\/span><br>In South Island.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Dunedin South<\/span><br>In South Island.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Dunedin North<\/span><br>In South Island.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Rangitata<\/span><br>In South Island.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Christchurch Central<\/span><br>In South Island.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Christchurch East<\/span><br>In South Island.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Kaikōura<\/span><br>In South Island.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Nelson<\/span><br>In South Island.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Waimakariri<\/span><br>In South Island.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Ilam<\/span><br>In South Island.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Wigram<\/span><br>In South Island.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Selwyn<\/span><br>In South Island.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>West Coast-Tasman<\/span><br>In South Island.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Port Hills<\/span><br>In South Island.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Northland<\/span><br>In Northland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Whangarei<\/span><br>In Northland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Rodney<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>North Shore<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Helensville<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Upper Harbour<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>East Coast Bays<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Northcote<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Te Atatū<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Mt Albert<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Epsom<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Auckland Central<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Maungakiekie<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Mt Roskill<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Manukau East<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Kelston<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>New Lynn<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Hunua<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Taranaki-King Country<\/span><br>In Waikato.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>New Plymouth<\/span><br>In Taranaki, Whanganui & Manawatu.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Waikato<\/span><br>In Waikato.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>East Coast<\/span><br>In Bay of Plenty & Hawke's Bay.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Napier<\/span><br>In Bay of Plenty & Hawke's Bay.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Bay of Plenty<\/span><br>In Bay of Plenty & Hawke's Bay.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Coromandel<\/span><br>In Waikato.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Botany<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Pakuranga<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Tāmaki<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Tauranga<\/span><br>In Bay of Plenty & Hawke's Bay.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Manurewa<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Papakura<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Māngere<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Hamilton West<\/span><br>In Waikato.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Rotorua<\/span><br>In Bay of Plenty & Hawke's Bay.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Hamilton East<\/span><br>In Waikato.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Tukituki<\/span><br>In Bay of Plenty & Hawke's Bay.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Taupō<\/span><br>In Waikato.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Rangitῑkei<\/span><br>In Taranaki, Whanganui & Manawatu.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Whanganui<\/span><br>In Taranaki, Whanganui & Manawatu.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Ōtaki<\/span><br>In Taranaki, Whanganui & Manawatu.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Palmerston North<\/span><br>In Taranaki, Whanganui & Manawatu.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Wairarapa<\/span><br>In Wellington.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Rimutaka<\/span><br>In Wellington.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Hutt South<\/span><br>In Wellington.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Rongotai<\/span><br>In Wellington.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Wellington Central<\/span><br>In Wellington.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Ōhāriu<\/span><br>In Wellington.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Mana<\/span><br>In Wellington.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Waiariki<\/span><br>In Bay of Plenty & Hawke's Bay.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Ikaroa-Rāwhiti<\/span><br>In Bay of Plenty & Hawke's Bay.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Hauraki-Waikato<\/span><br>In Waikato.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Te Tai Hauāuru<\/span><br>In Taranaki, Whanganui & Manawatu.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Te Tai Tonga<\/span><br>In South Island.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Tāmaki Makaurau<\/span><br>In Auckland.<\/div>","<div style='font-size:12px;float:left'><span style='font-size:18px;font-weight:bold'>Te Tai Tokerau<\/span><br>In Northland.<\/div>"],null,{"weight":4}]},{"method":"addMarkers","args":[[-45.428248346977,-45.4501926375855,-44.9106063619989,-44.9289126388209,-44.4056779439266,-43.8805824569071,-43.3537171915054,-42.825170404989,-42.2950277266912,-41.7644358429816,-42.2931445795846,-42.8202307741031,-43.3456091917368,-43.8691920419713,-44.3908888565696,-43.355671092506,-34.8650707636477,-34.8619641757868,-35.3896005983772,-35.9031930076764,-35.3950885003766,-35.9238370909486,-35.9158770196012,-36.4407222532263,-36.4512466403649,-36.9772456472365,-36.9640634821144,-36.4253862224382,-37.4858261874751,-37.5017609325042,-38.0247175705522,-37.5126963318464,-38.0384116830873,-38.5739472027045,-39.1082972395257,-39.6413897404696,-39.0993724267784,-38.4653827870201,-39.0108459607881,-38.4974167264189,-37.9820756957569,-38.0059340806596,-37.4649042707016,-36.9459819132761,-37.9531607744065,-38.5243090284543,-38.5460388136499,-38.5625891724338,-39.085151614296,-39.0408709749567,-39.0656460127887,-39.5834585387783,-39.6060198674553,-39.623203919055,-39.6349970109941,-40.1601253716893,-40.1453620704194,-40.1251127506801,-40.6657651716113,-41.2053455004586,-41.7437814766515,-41.7564855745962,-41.2206682021822,-40.6836022717489,-43.7653827870201,-44.3108459607881,-43.7974167264189,-44.3408709749567,-44.8834585387783,-43.2820756957569,-42.7649042707016],[169.681642213289,170.549973280257,170.142308369693,171.003098187273,171.447976657265,171.884895316569,172.314131967609,172.73595582331,173.150627745478,172.740350005558,172.325757043196,171.904143040419,171.475255525409,171.038834188968,170.59461067395,173.153225053322,173.135849864287,173.879768156307,174.259813330618,175.398049942047,173.511130554906,173.891378128053,174.644905595195,175.035217954032,174.276765946707,174.667471877795,175.430927767064,175.793186622712,175.832216849027,175.063678404552,175.465572737213,174.294629522688,174.691251701946,174.313455198891,173.930090621293,173.540953692031,174.71631418091,178.207141557438,177.854627803424,177.430280234498,177.012154273993,176.239271565698,176.600055731315,176.193794927243,177.784028234576,176.652282926521,175.873346921244,175.093671015271,175.502085381122,177.071446672832,176.287197942298,176.707327827229,175.916697971932,175.125284291042,174.333298602562,174.742734537415,175.540575103346,176.337717329037,175.962401907965,175.58116112955,175.193767125566,174.376286436807,174.770594755304,175.158614620322,178.207141557438,177.854627803424,177.430280234498,177.071446672832,176.707327827229,177.012154273993,176.600055731315],{"iconUrl":{"data":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=","index":0},"iconWidth":1,"iconHeight":1},null,null,{"clickable":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},null,null,null,null,["CLS","INV","WTI","DNS","DNN","RTA","CHC","CHE","KAI","NEL","WMK","ILM","WIG","SEL","WCT","PTH","NTH","WHR","ROD","NSH","HLV","UHB","ECB","NCO","TEA","MTA","EPS","AKC","MKK","MTR","MKE","KEL","NLY","HUN","TKC","NPL","WAI","ECT","NAP","BOP","COR","BOT","PAK","TĀM","TGA","MRW","PAP","MĀN","HMW","ROT","HME","TUK","TPŌ","RAN","WHN","ŌTA","PMN","WPA","RIM","HSH","RON","WLC","ŌHĀ","MNA","WKI","IKR","HWA","TTH","TTA","TMK","TTT"],{"clickable":false,"noHide":"T","direction":"right","opacity":1,"offset":[-6,-11],"textsize":"10px","textOnly":true,"style":null,"zoomAnimation":true,"className":""},null]}],"limits":{"lat":[-45.8032487837071,-34.5079711809721],"lng":[169.236094809946,178.608853127435]}},"evals":[],"jsHooks":{"render":[{"code":"function(el, x, data) {\n  return (function(el, t) {\n      var myMap = this;\n      // get rid of the ugly grey background\n      myMap._container.style['background'] = '#ffffff';\n    }).call(this.getMap(), el, x, data);\n}","data":null}]}}</script>
+<hr />
+<p>This is a <a href="https://en.wikipedia.org/wiki/Cartogram">cartogram</a> of the current (2014-2017) New Zealand electorates, with one hexagon for each electorate. Electorates have roughly equal populations, so this is a reasonable map of population distribution. The North and South Islands should be obvious; the Māori electorates make up a second mini NZ in the bottom right.</p>
+<p>The colours indicate the regional groupings, to help orient you to the distorted geography. Many electorates cross regional boundaries, so these are just a rough guide. Most notably, the Wellington region is split between several Māori electorates. (Credit for the regional groupings to <a href="http://insights.nzherald.co.nz/election/">Chris Knox in the Herald</a>).</p>
+<p>The hexagonal layout is due to <a href="http://mapdruid.blogspot.co.nz/2015/05/hexagonal-tile-map-of-new-zealand.html">Joseph Wright</a>, and I used his shapefiles as a base.</p>
+<p>Chris McDowall made <a href="http://hindsight.clerestories.com/2014/01/06/chris-mcdowall-hexagonal-maps/">a different hexagonal layout</a> for the 2011 electorates, which <a href="http://david.frigge.nz/nzhex2014/">I adapted</a> in 2014. I think I like that better in terms of the geographic layout, but it is very skinny so it’s less compact for on-screen display.</p>
+<p>Click through the storyboard and see different data from the election visualised in hexmaps…</p>
+</div>
+</div>
+
+</div>
+
+<script>
+
+$(document).ready(function () {
+
+  // add bootstrap table styles to pandoc tables
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+
+  // initialize mathjax
+
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function () {
+  FlexDashboard.init({
+    theme: "flatly",
+    fillPage: true,
+    orientation: "columns",
+    storyboard: false,
+    defaultFigWidth: 576,
+    defaultFigHeight: 460,
+    defaultFigWidthMobile: 360,
+    defaultFigHeightMobile: 460
+  });
+});
+</script>
+
+</body>
+</html>
