@@ -1,0 +1,117 @@
+---
+title: "2017 New Zealand Election"
+output: 
+  flexdashboard::flex_dashboard:
+    theme: flatly
+    self_contained: false
+    lib_dir: lib
+    mathjax: null
+---
+
+```{r init, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+```
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(sf)
+library(magrittr)
+library(dplyr)
+library(purrr)
+library(stringr)
+library(leaflet)
+library(leaflet.minicharts)
+library(nzelect)
+library(htmltools)
+library(htmlwidgets)
+
+begin_label_text <- "<div style='font-size:12px;float:left'>"
+begin_label_text_200 <- "<div style='font-size:12px;width:200px;float:left'>"
+begin_label_header <- "<span style='font-size:18px;font-weight:bold'>"
+end_label_header <- "</span><br>"
+end_label_text <- "</div>"
+
+load("data_geo/nzhex.rda")
+load("data_votes/preliminary/GE2017_prelim.rda")
+
+getLeafletOptions <- function(minZoom, maxZoom, ...) {
+  leafletOptions(
+    crs = leafletCRS("L.CRS.Simple"),
+    minZoom = minZoom, maxZoom = maxZoom,
+    dragging = FALSE, zoomControl = FALSE,
+    tap = FALSE,
+    attributionControl = FALSE , ...)
+}
+
+getFactorPal <- function(f) {
+  colorFactor(colormap::colormap(
+    colormap = colormap::colormaps$hsv,
+    nshades = length(f)), f)
+}
+```
+
+# Hexmaps {.storyboard}
+
+### Hello HexMaps: a hexagonal cartogram of New Zealand electorates (2014-2017)
+
+```{r hex_regions}
+leaflet(options = getLeafletOptions(5.8, 5.8)) %>% 
+  addPolygons(
+    data = nzhex,
+    label = ~nzhex %>% 
+      transpose() %>% 
+      map(~ paste0(begin_label_text,
+               begin_label_header, .x$electorate_name, end_label_header,
+               "In ", .x$region, ".",
+               end_label_text) %>% HTML()),
+    weight=2, color='#000000', group = 'Regions',
+    fillOpacity = 0.6, opacity = 1, fillColor = ~getFactorPal(region)(region),
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addLabelOnlyMarkers(
+    data = nzhex %>% st_centroid(),
+    label = ~abbr,
+    labelOptions = labelOptions(
+      noHide = 'T', textOnly = T,
+      offset=c(-6,-11))
+  ) %>% 
+  onRender(
+    "function(el, t) {
+      var myMap = this;
+      // get rid of the ugly grey background
+      myMap._container.style['background'] = '#ffffff';
+    }"
+  )
+```
+
+***
+
+This is a [cartogram](https://en.wikipedia.org/wiki/Cartogram) of the current
+(2014-2017) New Zealand electorates, with one hexagon for each electorate.
+Electorates have roughly equal populations, so this is a reasonable map of
+population distribution. The North and South Islands should be obvious; the
+Māori electorates make up a second mini NZ in the bottom right.
+
+The colours indicate the regional groupings, to help orient you to the
+distorted geography. Many electorates cross regional boundaries, so these
+are just a rough guide. Most notably, the Wellington region is split between
+several Māori electorates. (Credit for the regional groupings to
+[Chris Knox in the Herald](http://insights.nzherald.co.nz/election/)).
+
+The hexagonal layout is due to 
+[Joseph Wright](http://mapdruid.blogspot.co.nz/2015/05/hexagonal-tile-map-of-new-zealand.html),
+and I used his shapefiles as a base.
+
+Chris McDowall made [a different hexagonal layout](http://hindsight.clerestories.com/2014/01/06/chris-mcdowall-hexagonal-maps/)
+for the 2011 electorates, which [I adapted](http://david.frigge.nz/nzhex2014/) in 2014.
+I think I like that better in terms of the geographic layout, but it is very
+skinny so it's less compact for on-screen display.
+
+Click through the storyboard and see different data from the election
+visualised in hexmaps...
+
+
+
+
