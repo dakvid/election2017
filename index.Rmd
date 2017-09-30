@@ -1,5 +1,5 @@
 ---
-title: "2017 New Zealand Election"
+title: "2017 New Zealand Election (Provisional Results)"
 output: 
   flexdashboard::flex_dashboard:
     theme: flatly
