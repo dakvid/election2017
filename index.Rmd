@@ -2,10 +2,11 @@
 title: "2017 New Zealand Election (Provisional Results)"
 output: 
   flexdashboard::flex_dashboard:
-    theme: flatly
+    theme: spacelab
     self_contained: false
     lib_dir: lib
     mathjax: null
+    source_code: https://github.com/dakvid/election2017
 ---
 
 ```{r init, include=FALSE}
@@ -35,6 +36,10 @@ end_label_text <- "</div>"
 
 load("data_geo/nzhex.rda")
 load("data_votes/preliminary/GE2017_prelim.rda")
+data("GE2014")
+GE2014 %<>%
+  mutate(id = Electorate %>% str_extract("[0-9]+") %>% as.integer(),
+         Party = if_else(Party == "Maori Party", "Māori Party", Party))
 
 party_voters_2017 <-
   GE2017_prelim %>% 
@@ -46,6 +51,22 @@ party_voters_2017 <-
 
 candidate_voters_2017 <-
   GE2017_prelim %>% 
+  filter(VotingType == "Candidate",
+         !str_detect(Candidate, "nformal")) %>% 
+  group_by(id) %>% 
+  summarise(Voters = sum(Votes)) %>% 
+  ungroup()
+
+party_voters_2014 <-
+  GE2014 %>% 
+  filter(VotingType == "Party",
+         !str_detect(Party, "nformal")) %>% 
+  group_by(id) %>% 
+  summarise(Voters = sum(Votes)) %>% 
+  ungroup()
+
+candidate_voters_2014 <-
+  GE2014 %>% 
   filter(VotingType == "Candidate",
          !str_detect(Candidate, "nformal")) %>% 
   group_by(id) %>% 
@@ -111,13 +132,19 @@ Electorates have roughly equal populations, so this is a reasonable map of
 population distribution. The North and South Islands should be obvious; the
 Māori electorates make up a second mini NZ in the bottom right.
 
-The colours indicate the regional groupings, to help orient you to the
+Why are these maps more useful than a geographic map? In short, because they don't
+overrepresent rural areas and underrepresent urban areas.
+[Stephan Beban (NZ)](https://thespinoff.co.nz/politics/24-09-2017/a-better-visual-breakdown-of-the-2017-election-results/) and
+[Pitch Interactive (USA)](http://pitchinteractive.com/latest/tilegrams-more-human-maps/)
+have more to say on the topic.
+
+The colours here indicate the regional groupings, to help orient you to the
 distorted geography. Many electorates cross regional boundaries, so these
 are just a rough guide. Most notably, the Wellington region is split between
 several Māori electorates. (Credit for the regional groupings to
 [Chris Knox in the Herald](http://insights.nzherald.co.nz/election/)).
 
-The hexagonal layout is due to 
+This hexagonal layout is due to 
 [Joseph Wright](http://mapdruid.blogspot.co.nz/2015/05/hexagonal-tile-map-of-new-zealand.html),
 and I used his shapefiles as a base.
 
@@ -130,7 +157,7 @@ Click through the storyboard and see different data from the election
 visualised in hexmaps...
 
 
-### Electorate Winners
+### Electorate Winners: Who won the seats?
 
 ```{r hex_candidates}
 electorate_winners <-
@@ -195,12 +222,225 @@ leaflet(options = getLeafletOptions(5.8, 5.8)) %>%
 
 Each hexagon is coloured for the party of the winning candidate. The strength of colour tracks
 the percentage of votes the winner received --- from
-`r electorate_winners %>% top_n(-1, PerCent) %$% PerCent`% for
+`r electorate_winners %>% top_n(-1, PerCent) %$% PerCent`% for the
 `r electorate_winners %>% top_n(-1, PerCent) %$% Party` in
 `r electorate_winners %>% top_n(-1, PerCent) %>% inner_join(nzhex) %$% electorate_name`
 to
-`r electorate_winners %>% top_n(1, PerCent) %$% PerCent`% for
+`r electorate_winners %>% top_n(1, PerCent) %$% PerCent`% for the
 `r electorate_winners %>% top_n(1, PerCent) %$% Party` in
 `r electorate_winners %>% top_n(1, PerCent) %>% inner_join(nzhex) %$% electorate_name`.
 
+
+### Party Votes: How are each party's voters distributed? Do they have broad or localised support?
+
+```{r hex_parties}
+party_votes <-
+  GE2017_prelim %>% 
+  filter(VotingType == "Party") %>% 
+  group_by(id, Party) %>% 
+  summarise(Votes = sum(Votes)) %>% 
+  ungroup() %>% 
+  inner_join(party_voters_2017) %>% 
+  mutate(PerCent = round(Votes / Voters * 100, 1)) %>% 
+  mutate(party_colour = case_when(
+    Party == "National Party" ~ parties_v["National"],
+    Party == "Labour Party" ~ parties_v["Labour"],
+    Party == "New Zealand First Party" ~ parties_v["NZ First"],
+    Party == "ACT New Zealand" ~ parties_v["ACT"],
+    Party == "United Future" ~ parties_v["United Future"],
+    Party == "Māori Party" ~ parties_v["Māori"],
+    Party == "Green Party" ~ parties_v["Green"],
+    Party == "The Opportunities Party (TOP)" ~ parties_v["TOP"],
+    Party == "Aotearoa Legalise Cannabis Party" ~ parties_v["Legalise Cannabis"],
+    Party == "Ban1080" ~ parties_v["Ban 1080"],
+    Party == "Conservative" ~ parties_v["Conservative"],
+    Party == "Internet Party" ~ parties_v["Internet"],
+    Party == "MANA" ~ parties_v["Mana"]
+  )) %>% 
+  group_by(Party) %>% 
+  mutate(mean_votes = mean(Votes),
+         opa = case_when(
+           Votes < 0.8 * mean_votes ~ 0.15,
+           Votes < 0.95 * mean_votes ~ 0.3,
+           Votes <= 1.05 * mean_votes ~ 0.5,
+           Votes <= 1.2 * mean_votes ~ 0.7,
+           Votes > 1.2 * mean_votes ~ 0.85
+         ),
+         MaxPC = ceiling(max(PerCent))
+  ) %>% 
+  ungroup()
+
+party_votes_2014 <-
+  GE2014 %>% 
+  filter(VotingType == "Party") %>% 
+  group_by(id, Party) %>% 
+  summarise(Votes = sum(Votes)) %>% 
+  ungroup() %>% 
+  inner_join(party_voters_2017) %>% 
+  mutate(PerCent = round(Votes / Voters * 100, 1)) %>% 
+  mutate(party_colour = case_when(
+    Party == "National Party" ~ parties_v["National"],
+    Party == "Labour Party" ~ parties_v["Labour"],
+    Party == "New Zealand First Party" ~ parties_v["NZ First"],
+    Party == "ACT New Zealand" ~ parties_v["ACT"],
+    Party == "United Future" ~ parties_v["United Future"],
+    Party == "Māori Party" ~ parties_v["Māori"],
+    Party == "Green Party" ~ parties_v["Green"],
+    Party == "Aotearoa Legalise Cannabis Party" ~ parties_v["Legalise Cannabis"],
+    Party == "Ban1080" ~ parties_v["Ban 1080"],
+    Party == "Conservative" ~ parties_v["Conservative"],
+    Party == "Internet MANA" ~ parties_v["Internet"]
+  )) %>% 
+  group_by(Party) %>% 
+  mutate(mean_votes = mean(Votes),
+         opa = case_when(
+           Votes < 0.8 * mean_votes ~ 0.15,
+           Votes < 0.95 * mean_votes ~ 0.3,
+           Votes <= 1.05 * mean_votes ~ 0.5,
+           Votes <= 1.2 * mean_votes ~ 0.7,
+           Votes > 1.2 * mean_votes ~ 0.85
+         ),
+         MaxPC = ceiling(max(PerCent))
+  ) %>% 
+  ungroup()
+
+party_votes$labeltext <-
+  party_votes %>% 
+  left_join(
+    party_votes_2014 %>% 
+      select(id, Party, Votes2014 = Votes,
+             PerCent2014 = PerCent, MaxPC2014 = MaxPC)
+  ) %>% 
+  group_by(Party) %>% 
+  mutate(MaxPC = if_else(is.na(MaxPC2014), MaxPC, max(MaxPC, MaxPC2014))) %>% 
+  ungroup() %>% 
+  inner_join(nzhex) %>% 
+  transpose() %>% 
+  map(~ paste0(begin_label_text_200,
+               begin_label_header, .x$electorate_name, end_label_header,
+               prettyNum(.x$Votes, big.mark=','), " votes.",
+               "<br>",
+               "<div style='width:95%'>",
+               "<span style='float:left'>2017: ", .x$PerCent, "%</span>",
+               "<br clear='all' />",
+               "<span style='background:", .x$party_colour, ";width:", round(.x$PerCent / .x$MaxPC * 100), "%;float:left'>&nbsp;</span>",
+               if (is.na(.x$MaxPC2014)) {""} else {
+                 paste0(
+                   "<br clear='all' />",
+                   "<span style='float:left'>2014: ", .x$PerCent2014, "%</span>",
+                   "<br clear='all' />",
+                   "<span style='background:", .x$party_colour, ";width:", round(.x$PerCent2014 / .x$MaxPC * 100), "%;float:left'>&nbsp;</span>"
+                 )
+               },
+               "</div>",
+               end_label_text) %>% 
+        HTML())
+
+leaflet(options = getLeafletOptions(5.8, 5.8)) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "National Party")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'National 46.0%',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "Labour Party")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'Labour 35.8%',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "New Zealand First Party")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'NZ First 7.5%',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "Green Party")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'Green 5.9%',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "The Opportunities Party (TOP)")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'TOP 2.2%',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "Māori Party")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'Māori 1.1%',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "ACT New Zealand")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'ACT 0.5%',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "Aotearoa Legalise Cannabis Party")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'Cannabis 0.3%',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "Conservative")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'Conservative 0.2%',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addLabelOnlyMarkers(
+    data = nzhex %>% st_centroid(),
+    label = ~abbr,
+    labelOptions = labelOptions(
+      noHide = 'T', textOnly = T,
+      offset=c(-6,-11))
+  ) %>% 
+  addLayersControl(
+    baseGroups = c("National 46.0%", "Labour 35.8%", "NZ First 7.5%", "Green 5.9%",
+                   "TOP 2.2%", "Māori 1.1%", "ACT 0.5%", "Cannabis 0.3%", "Conservative 0.2%"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>% 
+  onRender(
+    "function(el, t) {
+      var myMap = this;
+      // get rid of the ugly grey background
+      myMap._container.style['background'] = '#ffffff';
+    }"
+  )
+```
+
+***
+
+Choose a party and see the tiles shaded relative to the number of voters. There are
+five shades: within 5% of the average, between 5-20% over (or under) average, and more than 20% over (or under) the average.
+The mouseover compares the 2017 and 2014 percentages.
+
+Note that because it's based on absolute numbers rather than percentages, the Māori
+electorates may be unexpectedly lighter because of their lower turnouts.
+
+National and Labour have fairly complementary patterns, as do NZ First and the Greens.
+
+The collapse of the Conservative vote and the redistribution of the 4% wasted votes in
+2014 is a factor in the 2017 results that often gets overlooked.
 
