@@ -6,6 +6,9 @@ output:
     self_contained: false
     lib_dir: lib
     mathjax: null
+    navbar:
+      - { title: "@dakvid", icon: "fa-twitter", "https://twitter.com/dakvid", align: right}
+    social: menu
     source_code: https://github.com/dakvid/election2017
 ---
 
@@ -89,7 +92,7 @@ getFactorPal <- function(f) {
 }
 ```
 
-# Hexmaps {.storyboard}
+# Hexmaps {.storyboard data-icon="fa-map"}
 
 ### Hello HexMaps: a hexagonal cartogram of New Zealand electorates (2014-2017)
 
