@@ -447,3 +447,15 @@ National and Labour have fairly complementary patterns, as do NZ First and the G
 The collapse of the Conservative vote and the redistribution of the 4% wasted votes in
 2014 is a factor in the 2017 results that often gets overlooked.
 
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-30013353-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
