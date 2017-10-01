@@ -7,7 +7,7 @@ output:
     lib_dir: lib
     mathjax: null
     navbar:
-      - { title: "@dakvid", icon: "fa-twitter", "https://twitter.com/dakvid", align: right}
+      - { title: "@dakvid", icon: "fa-twitter", href: "https://twitter.com/dakvid", align: right}
     social: menu
     source_code: https://github.com/dakvid/election2017
 ---
