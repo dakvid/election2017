@@ -65,7 +65,7 @@ party_voters_2014 <-
   filter(VotingType == "Party",
          !str_detect(Party, "nformal")) %>% 
   group_by(id) %>% 
-  summarise(Voters = sum(Votes)) %>% 
+  summarise(Voters2014 = sum(Votes)) %>% 
   ungroup()
 
 candidate_voters_2014 <-
@@ -73,7 +73,7 @@ candidate_voters_2014 <-
   filter(VotingType == "Candidate",
          !str_detect(Candidate, "nformal")) %>% 
   group_by(id) %>% 
-  summarise(Voters = sum(Votes)) %>% 
+  summarise(Voters2014 = sum(Votes)) %>% 
   ungroup()
 
 getLeafletOptions <- function(minZoom, maxZoom, ...) {
@@ -277,43 +277,17 @@ party_votes_2014 <-
   GE2014 %>% 
   filter(VotingType == "Party") %>% 
   group_by(id, Party) %>% 
-  summarise(Votes = sum(Votes)) %>% 
+  summarise(Votes2014 = sum(Votes)) %>% 
   ungroup() %>% 
-  inner_join(party_voters_2017) %>% 
-  mutate(PerCent = round(Votes / Voters * 100, 1)) %>% 
-  mutate(party_colour = case_when(
-    Party == "National Party" ~ parties_v["National"],
-    Party == "Labour Party" ~ parties_v["Labour"],
-    Party == "New Zealand First Party" ~ parties_v["NZ First"],
-    Party == "ACT New Zealand" ~ parties_v["ACT"],
-    Party == "United Future" ~ parties_v["United Future"],
-    Party == "Māori Party" ~ parties_v["Māori"],
-    Party == "Green Party" ~ parties_v["Green"],
-    Party == "Aotearoa Legalise Cannabis Party" ~ parties_v["Legalise Cannabis"],
-    Party == "Ban1080" ~ parties_v["Ban 1080"],
-    Party == "Conservative" ~ parties_v["Conservative"],
-    Party == "Internet MANA" ~ parties_v["Internet"]
-  )) %>% 
+  inner_join(party_voters_2014) %>% 
+  mutate(PerCent2014 = round(Votes2014 / Voters2014 * 100, 1)) %>% 
   group_by(Party) %>% 
-  mutate(mean_votes = mean(Votes),
-         opa = case_when(
-           Votes < 0.8 * mean_votes ~ 0.15,
-           Votes < 0.95 * mean_votes ~ 0.3,
-           Votes <= 1.05 * mean_votes ~ 0.5,
-           Votes <= 1.2 * mean_votes ~ 0.7,
-           Votes > 1.2 * mean_votes ~ 0.85
-         ),
-         MaxPC = ceiling(max(PerCent))
-  ) %>% 
+  mutate(MaxPC2014 = ceiling(max(PerCent2014))) %>% 
   ungroup()
 
 party_votes$labeltext <-
   party_votes %>% 
-  left_join(
-    party_votes_2014 %>% 
-      select(id, Party, Votes2014 = Votes,
-             PerCent2014 = PerCent, MaxPC2014 = MaxPC)
-  ) %>% 
+  left_join(party_votes_2014) %>% 
   group_by(Party) %>% 
   mutate(MaxPC = if_else(is.na(MaxPC2014), MaxPC, max(MaxPC, MaxPC2014))) %>% 
   ungroup() %>% 
@@ -446,6 +420,123 @@ National and Labour have fairly complementary patterns, as do NZ First and the G
 
 The collapse of the Conservative vote and the redistribution of the 4% wasted votes in
 2014 is a factor in the 2017 results that often gets overlooked.
+
+
+### Coalition votes: Which electorates were "won" by the incumbent government?
+
+```{r hex_coalition}
+coalition_votes <-
+  party_votes %>% 
+  filter(Party %in% c("National Party", "United Future", "Māori Party", "ACT New Zealand")) %>% 
+  group_by(id) %>% 
+  summarise(Votes = sum(Votes),
+            Voters = min(Voters),
+            party_colour = min(party_colour)) %>% # min=National
+  mutate(PerCent = round(Votes / Voters * 100, 1),
+         MaxPC = ceiling(max(PerCent))) %>% 
+  ungroup() %>% 
+  mutate(win = PerCent > 50)
+
+coalition_votes_2014 <-
+  party_votes_2014 %>% 
+  filter(Party %in% c("National Party", "United Future", "Māori Party", "ACT New Zealand")) %>% 
+  group_by(id) %>% 
+  summarise(Votes2014 = sum(Votes2014),
+            Voters2014 = min(Voters2014)) %>%
+  mutate(PerCent2014 = round(Votes2014 / Voters2014 * 100, 1),
+         MaxPC2014 = ceiling(max(PerCent2014))) %>% 
+  ungroup() %>% 
+  mutate(win2014 = PerCent2014 > 50)
+
+coalition_votes$labeltext <-
+  coalition_votes %>% 
+  left_join(coalition_votes_2014) %>% 
+  inner_join(nzhex) %>% 
+  transpose() %>% 
+  map(~ paste0(begin_label_text_200,
+               begin_label_header, .x$electorate_name, end_label_header,
+               prettyNum(.x$Votes, big.mark=','), " votes.",
+               "<br>",
+               "<div style='width:95%'>",
+               "<span style='float:left'>2017: ", .x$PerCent, "%</span>",
+               "<br clear='all' />",
+               "<span style='background:", .x$party_colour, ";width:", round(.x$PerCent / .x$MaxPC * 100), "%;float:left'>&nbsp;</span>",
+               if (is.na(.x$MaxPC2014)) {""} else {
+                 paste0(
+                   "<br clear='all' />",
+                   "<span style='float:left'>2014: ", .x$PerCent2014, "%</span>",
+                   "<br clear='all' />",
+                   "<span style='background:", .x$party_colour, ";width:", round(.x$PerCent2014 / .x$MaxPC * 100), "%;float:left'>&nbsp;</span>"
+                 )
+               },
+               "</div>",
+               end_label_text) %>% 
+        HTML())
+
+leaflet(options = getLeafletOptions(5.8, 5.8)) %>% 
+  addMinicharts(
+    lng = nzhex %>% 
+      arrange(id) %>% 
+      st_centroid() %>% 
+      st_coordinates() %>% 
+      extract(, "X"),
+    lat = nzhex %>% 
+      arrange(id) %>% 
+      st_centroid() %>% 
+      st_coordinates() %>% 
+      extract(, "Y"),
+    chartdata = coalition_votes %>% 
+      arrange(id) %>% 
+      transmute(Coalition = PerCent, `"Change"` = 100 - PerCent),
+    type = "pie",
+    colorPalette = c("darkblue", "orange")
+  ) %>%
+  addPolygons(
+    data = inner_join(nzhex, coalition_votes),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'Coalition Voters',
+    fillColor = "black", fillOpacity = ~if_else(win, 0.2, 0),
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>%
+  addLabelOnlyMarkers(
+    data = nzhex %>% st_centroid(),
+    label = ~abbr,
+    labelOptions = labelOptions(
+      style = list("color" = "white"),
+      noHide = 'T', textOnly = T,
+      offset=c(-6,-11))
+  ) %>%
+  onRender(
+    "function(el, t) {
+      var myMap = this;
+      // get rid of the ugly grey background
+      myMap._container.style['background'] = '#ffffff';
+    }"
+  )
+```
+
+***
+
+The incumbant government is a four-party coalition between National (47.0% in 2014),
+Māori (1.3%), ACT (0.7%) and United Future (0.2%). Some have argued that the election
+was a referendum on the government and that the majority voted against it.
+
+Though I'm no fan of pie charts in general, I think they're reasonable here to show the
+proportion of votes for and against coalition parties, with the latter arguably in
+favour of some sort of change.
+
+The coalition received a majority in just 
+`r sum(coalition_votes$win)` of 71 electorates, down from
+`r sum(coalition_votes_2014$win2014)` in 2014.
+
+They increased their vote in
+`r inner_join(coalition_votes, coalition_votes_2014) %>% filter(PerCent > PerCent2014) %>% nrow()`
+electorates, but none by more than 4% (the 2014 national vote for the collapsed
+Conservative party).
+The decreases ranged up to
+`r inner_join(coalition_votes, coalition_votes_2014) %>% inner_join(nzhex) %>% arrange(PerCent2014 - PerCent, PerCent) %>% tail(1) %$% {PerCent2014 - PerCent}`%
+in
+`r inner_join(coalition_votes, coalition_votes_2014) %>% inner_join(nzhex) %>% arrange(PerCent2014 - PerCent, PerCent) %>% tail(1) %$% electorate_name`.
 
 
 <script>
