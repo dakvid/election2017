@@ -372,22 +372,6 @@ leaflet(options = getLeafletOptions(5.8, 5.8)) %>%
     fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
     highlightOptions = highlightOptions(weight = 4)
   ) %>% 
-  addPolygons(
-    data = nzhex %>% 
-      inner_join(party_votes %>% filter(Party == "Aotearoa Legalise Cannabis Party")),
-    label = ~labeltext,
-    weight=2, color='#000000', group = 'Cannabis 0.3%',
-    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
-    highlightOptions = highlightOptions(weight = 4)
-  ) %>% 
-  addPolygons(
-    data = nzhex %>% 
-      inner_join(party_votes %>% filter(Party == "Conservative")),
-    label = ~labeltext,
-    weight=2, color='#000000', group = 'Conservative 0.2%',
-    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
-    highlightOptions = highlightOptions(weight = 4)
-  ) %>% 
   addLabelOnlyMarkers(
     data = nzhex %>% st_centroid(),
     label = ~abbr,
@@ -397,7 +381,7 @@ leaflet(options = getLeafletOptions(5.8, 5.8)) %>%
   ) %>% 
   addLayersControl(
     baseGroups = c("National 46.0%", "Labour 35.8%", "NZ First 7.5%", "Green 5.9%",
-                   "TOP 2.2%", "Māori 1.1%", "ACT 0.5%", "Cannabis 0.3%", "Conservative 0.2%"),
+                   "TOP 2.2%", "Māori 1.1%", "ACT 0.5%"),
     options = layersControlOptions(collapsed = FALSE)
   ) %>% 
   onRender(
@@ -420,8 +404,6 @@ electorates may be unexpectedly lighter because of their lower turnouts.
 
 National and Labour have fairly complementary patterns, as do NZ First and the Greens.
 
-The collapse of the Conservative vote and the redistribution of the 4% wasted votes in
-2014 is a factor in the 2017 results that often gets overlooked.
 
 
 ### Coalition votes: Which electorates were "won" by the incumbent government?
@@ -540,6 +522,120 @@ The decreases ranged up to
 in
 `r inner_join(coalition_votes, coalition_votes_2014) %>% inner_join(nzhex) %>% arrange(PerCent2014 - PerCent, PerCent) %>% tail(1) %$% electorate_name`.
 
+
+### Tiny Party Votes: Are the sub 0.5% parties evenly ignored, or do they have localised support?
+
+```{r hex_minnows}
+leaflet(options = getLeafletOptions(5.8, 5.8)) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "Aotearoa Legalise Cannabis Party")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'Cannabis 0.3%',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "Conservative")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'Conservative 0.2%',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "MANA")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'MANA 0.1%',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "Ban1080")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'Ban1080 0.1%',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "New Zealand People's Party")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = "NZ People's 0.1%",
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "United Future")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'United Future 0.1%',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "NZ Outdoors Party")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'NZ Outdoors 0.1%',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "Democrats for Social Credit")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'Social Credit 0.0%',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addPolygons(
+    data = nzhex %>% 
+      inner_join(party_votes %>% filter(Party == "Internet Party")),
+    label = ~labeltext,
+    weight=2, color='#000000', group = 'Internet 0.0%',
+    fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
+    highlightOptions = highlightOptions(weight = 4)
+  ) %>% 
+  addLabelOnlyMarkers(
+    data = nzhex %>% st_centroid(),
+    label = ~abbr,
+    labelOptions = labelOptions(
+      noHide = 'T', textOnly = T,
+      offset=c(-6,-11))
+  ) %>% 
+  addLayersControl(
+    baseGroups = c("Cannabis 0.3%", "Conservative 0.2%", "MANA 0.1%", "Ban1080 0.1%", "NZ People's 0.1%",
+                   "United Future 0.1%", "NZ Outdoors 0.1%", "Social Credit 0.0%", "Internet 0.0%"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>% 
+  onRender(
+    "function(el, t) {
+      var myMap = this;
+      // get rid of the ugly grey background
+      myMap._container.style['background'] = '#ffffff';
+    }"
+  )
+```
+
+***
+
+More people cast an "informal" vote than voted for any of these parties.
+
+MANA unsurprisingly have most of their support in the Māori seats.
+I'm seriously wondering if they got some votes in the Mana electorate from people assuming they
+had a local focus.
+
+The rest of the distributions are pretty much what I expected, though when a party doesn't break
+100 votes in any electorate (as is the case with the bottom four) it's easy to overinterpret the noise.
+
+The biggest surprise to me was that every party got at least 1 vote in every electorate, with only
+three exceptions:
+MANA in Ilam,
+United Future in Ikaroa-Rāwhiti, and
+Democrats for Social Credit in Te Tai Tokerau.
 
 
 # Dumbbells {data-icon="ion-ios-settings-strong"}
