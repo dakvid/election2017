@@ -1,0 +1,429 @@
+---
+title: "2017 New Zealand Election"
+output: 
+  flexdashboard::flex_dashboard:
+    theme: spacelab
+    self_contained: false
+    lib_dir: lib
+    mathjax: null
+    navbar:
+      - { title: "Intro", icon: "", href: "index.html", align: left }
+      - { title: "Dumbbells", icon: "ion-ios-settings-strong", href: "", align: left }
+      - { title: "Hexmaps", icon: "fa-map", href: "hexmaps.html", align: left }
+      - { title: "3D Hexmaps", icon: "fa-map", href: "3dhex.html", align: left }
+      - { title: "@dakvid", icon: "fa-twitter", href: "https://twitter.com/dakvid", align: right }
+    social: menu
+    source_code: https://github.com/dakvid/election2017
+---
+
+```{r init, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+```
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(sf)
+library(magrittr)
+library(dplyr)
+library(forcats)
+library(purrr)
+library(stringr)
+library(leaflet)
+library(leaflet.minicharts)
+library(nzelect)
+library(htmltools)
+library(htmlwidgets)
+library(plotly)
+
+load("data_geo/nzhex.rda")
+load("data_votes/preliminary/GE2017_prelim.rda")
+data("GE2014")
+GE2014 %<>%
+  mutate(id = Electorate %>% str_extract("[0-9]+") %>% as.integer(),
+         Party = if_else(Party == "Maori Party", "Māori Party", Party))
+
+party_voters_2017 <-
+  GE2017_prelim %>% 
+  filter(VotingType == "Party",
+         !str_detect(Party, "nformal")) %>% 
+  group_by(id) %>% 
+  summarise(Voters = sum(Votes)) %>% 
+  ungroup()
+
+candidate_voters_2017 <-
+  GE2017_prelim %>% 
+  filter(VotingType == "Candidate",
+         !str_detect(Candidate, "nformal")) %>% 
+  group_by(id) %>% 
+  summarise(Voters = sum(Votes)) %>% 
+  ungroup()
+
+party_voters_2014 <-
+  GE2014 %>% 
+  filter(VotingType == "Party",
+         !str_detect(Party, "nformal")) %>% 
+  group_by(id) %>% 
+  summarise(Voters2014 = sum(Votes)) %>% 
+  ungroup()
+
+candidate_voters_2014 <-
+  GE2014 %>% 
+  filter(VotingType == "Candidate",
+         !str_detect(Candidate, "nformal")) %>% 
+  group_by(id) %>% 
+  summarise(Voters2014 = sum(Votes)) %>% 
+  ungroup()
+```
+
+
+# 
+
+```{r db_data}
+party_votes <-
+  GE2017_prelim %>% 
+  filter(VotingType == "Party") %>% 
+  group_by(id, Party) %>% 
+  summarise(Votes = sum(Votes)) %>% 
+  ungroup() %>% 
+  inner_join(party_voters_2017) %>% 
+  mutate(PerCent = round(Votes / Voters * 100, 1))
+
+party_votes_2014 <-
+  GE2014 %>% 
+  filter(VotingType == "Party") %>% 
+  group_by(id, Party) %>% 
+  summarise(Votes2014 = sum(Votes)) %>% 
+  ungroup() %>% 
+  inner_join(party_voters_2014) %>% 
+  mutate(PerCent2014 = round(Votes2014 / Voters2014 * 100, 1))
+
+pv_change <-
+  inner_join(
+    party_votes %>% 
+      inner_join(nzhex) %>% 
+      select(Party, Electorate = electorate_name, `2017` = PerCent),
+    party_votes_2014 %>% 
+      inner_join(nzhex) %>% 
+      select(Party, Electorate = electorate_name, `2014` = PerCent2014)
+  )
+```
+
+
+## Plots {.tabset}
+
+### National
+
+```{r db_national}
+pv_change %>% 
+  filter(Party == "National Party") %>% 
+  mutate(Electorate = fct_reorder(Electorate, `2017`)) %>% 
+  plot_ly(color = I("gray80")) %>% 
+  add_segments(
+    x = ~pmin(`2014`, `2017`), xend = ~pmax(`2014`, `2017`),
+    y = ~Electorate, yend = ~Electorate,
+    showlegend = FALSE
+  ) %>% 
+  add_markers(
+    x = ~`2014`, y = ~Electorate, name = "2014",
+    color = I("grey"), hoverinfo = "text",
+    text = ~paste0(`2014`, "% of ", Electorate, " votes in 2014")
+  ) %>% 
+  add_markers(
+    x = ~`2017`, y = ~Electorate, name = "2017",
+    color = I(parties_v["National"]), hoverinfo = "text",
+    text = ~paste0(`2017`, "% of ", Electorate, " votes in 2017")
+  ) %>% 
+  layout(
+    title = "Relative Votes for the National Party by Electorate",
+    xaxis = list(title = "Votes (Percent)"),
+    yaxis = list(title = "", dtick = 1),
+    margin = list(l = 130),
+    legend = list(x = 0.8, y = 0.1)
+  )
+```
+
+### Labour
+
+```{r db_labour}
+pv_change %>% 
+  filter(Party == "Labour Party") %>% 
+  mutate(Electorate = fct_reorder(Electorate, `2017`)) %>% 
+  plot_ly(color = I("gray80")) %>% 
+  add_segments(
+    x = ~pmin(`2014`, `2017`), xend = ~pmax(`2014`, `2017`),
+    y = ~Electorate, yend = ~Electorate,
+    showlegend = FALSE
+  ) %>% 
+  add_markers(
+    x = ~`2014`, y = ~Electorate, name = "2014",
+    color = I("grey"), hoverinfo = "text",
+    text = ~paste0(`2014`, "% of ", Electorate, " votes in 2014")
+  ) %>% 
+  add_markers(
+    x = ~`2017`, y = ~Electorate, name = "2017",
+    color = I(parties_v["Labour"]), hoverinfo = "text",
+    text = ~paste0(`2017`, "% of ", Electorate, " votes in 2017")
+  ) %>% 
+  layout(
+    title = "Relative Votes for the Labour Party by Electorate",
+    xaxis = list(title = "Votes (Percent)"),
+    yaxis = list(title = "", dtick = 1),
+    margin = list(l = 130),
+    legend = list(x = 0.8, y = 0.1)
+  )
+```
+
+### NZ First
+
+```{r db_nzf}
+pv_change %>% 
+  filter(Party == "New Zealand First Party") %>% 
+  mutate(Electorate = fct_reorder(Electorate, `2017`)) %>% 
+  plot_ly(color = I("gray80")) %>% 
+  add_segments(
+    x = ~pmin(`2014`, `2017`), xend = ~pmax(`2014`, `2017`),
+    y = ~Electorate, yend = ~Electorate,
+    showlegend = FALSE
+  ) %>% 
+  add_markers(
+    x = ~`2014`, y = ~Electorate, name = "2014",
+    color = I("grey"), hoverinfo = "text",
+    text = ~paste0(`2014`, "% of ", Electorate, " votes in 2014")
+  ) %>% 
+  add_markers(
+    x = ~`2017`, y = ~Electorate, name = "2017",
+    color = I(parties_v["NZ First"]), hoverinfo = "text",
+    text = ~paste0(`2017`, "% of ", Electorate, " votes in 2017")
+  ) %>% 
+  layout(
+    title = "Relative Votes for the NZ First Party by Electorate",
+    xaxis = list(title = "Votes (Percent)"),
+    yaxis = list(title = "", dtick = 1),
+    margin = list(l = 130),
+    legend = list(x = 0.8, y = 0.1)
+  )
+```
+
+### Green
+
+```{r db_green}
+pv_change %>% 
+  filter(Party == "Green Party") %>% 
+  mutate(Electorate = fct_reorder(Electorate, `2017`)) %>% 
+  plot_ly(color = I("gray80")) %>% 
+  add_segments(
+    x = ~pmin(`2014`, `2017`), xend = ~pmax(`2014`, `2017`),
+    y = ~Electorate, yend = ~Electorate,
+    showlegend = FALSE
+  ) %>% 
+  add_markers(
+    x = ~`2014`, y = ~Electorate, name = "2014",
+    color = I("grey"), hoverinfo = "text",
+    text = ~paste0(`2014`, "% of ", Electorate, " votes in 2014")
+  ) %>% 
+  add_markers(
+    x = ~`2017`, y = ~Electorate, name = "2017",
+    color = I(parties_v["Green"]), hoverinfo = "text",
+    text = ~paste0(`2017`, "% of ", Electorate, " votes in 2017")
+  ) %>% 
+  layout(
+    title = "Relative Votes for the Green Party by Electorate",
+    xaxis = list(title = "Votes (Percent)"),
+    yaxis = list(title = "", dtick = 1),
+    margin = list(l = 130),
+    legend = list(x = 0.8, y = 0.1)
+  )
+```
+
+### Māori
+
+```{r db_māori}
+pv_change %>% 
+  filter(Party == "Māori Party") %>% 
+  mutate(Electorate = fct_reorder(Electorate, `2017`)) %>% 
+  plot_ly(color = I("gray80")) %>% 
+  add_segments(
+    x = ~pmin(`2014`, `2017`), xend = ~pmax(`2014`, `2017`),
+    y = ~Electorate, yend = ~Electorate,
+    showlegend = FALSE
+  ) %>% 
+  add_markers(
+    x = ~`2014`, y = ~Electorate, name = "2014",
+    color = I("grey"), hoverinfo = "text",
+    text = ~paste0(`2014`, "% of ", Electorate, " votes in 2014")
+  ) %>% 
+  add_markers(
+    x = ~`2017`, y = ~Electorate, name = "2017",
+    color = I(parties_v["Māori"]), hoverinfo = "text",
+    text = ~paste0(`2017`, "% of ", Electorate, " votes in 2017")
+  ) %>% 
+  layout(
+    title = "Relative Votes for the Māori Party by Electorate",
+    xaxis = list(title = "Votes (Percent)"),
+    yaxis = list(title = "", dtick = 1),
+    margin = list(l = 130),
+    legend = list(x = 0.8, y = 0.1)
+  )
+```
+
+### ACT
+
+```{r db_act}
+pv_change %>% 
+  filter(Party == "ACT New Zealand") %>% 
+  mutate(Electorate = fct_reorder(Electorate, `2017`)) %>% 
+  plot_ly(color = I("gray80")) %>% 
+  add_segments(
+    x = ~pmin(`2014`, `2017`), xend = ~pmax(`2014`, `2017`),
+    y = ~Electorate, yend = ~Electorate,
+    showlegend = FALSE
+  ) %>% 
+  add_markers(
+    x = ~`2014`, y = ~Electorate, name = "2014",
+    color = I("grey"), hoverinfo = "text",
+    text = ~paste0(`2014`, "% of ", Electorate, " votes in 2014")
+  ) %>% 
+  add_markers(
+    x = ~`2017`, y = ~Electorate, name = "2017",
+    color = I(parties_v["ACT"]), hoverinfo = "text",
+    text = ~paste0(`2017`, "% of ", Electorate, " votes in 2017")
+  ) %>% 
+  layout(
+    title = "Relative Votes for the ACT Party by Electorate",
+    xaxis = list(title = "Votes (Percent)"),
+    yaxis = list(title = "", dtick = 1),
+    margin = list(l = 130),
+    legend = list(x = 0.8, y = 0.1)
+  )
+```
+
+### Conservative
+
+```{r db_conservative}
+pv_change %>% 
+  filter(Party == "Conservative") %>% 
+  mutate(Electorate = fct_reorder(Electorate, `2017`)) %>% 
+  plot_ly(color = I("gray80")) %>% 
+  add_segments(
+    x = ~pmin(`2014`, `2017`), xend = ~pmax(`2014`, `2017`),
+    y = ~Electorate, yend = ~Electorate,
+    showlegend = FALSE
+  ) %>% 
+  add_markers(
+    x = ~`2014`, y = ~Electorate, name = "2014",
+    color = I("grey"), hoverinfo = "text",
+    text = ~paste0(`2014`, "% of ", Electorate, " votes in 2014")
+  ) %>% 
+  add_markers(
+    x = ~`2017`, y = ~Electorate, name = "2017",
+    color = I(parties_v["Conservative"]), hoverinfo = "text",
+    text = ~paste0(`2017`, "% of ", Electorate, " votes in 2017")
+  ) %>% 
+  layout(
+    title = "Relative Votes for the Conservative Party by Electorate",
+    xaxis = list(title = "Votes (Percent)"),
+    yaxis = list(title = "", dtick = 1),
+    margin = list(l = 130),
+    legend = list(x = 0.8, y = 0.1)
+  )
+```
+
+### Left vs Right
+
+```{r db_left_right}
+pv_change_lr <-
+  pv_change %>% 
+  mutate(Group = 
+           case_when(Party %in% c("Labour Party", "Green Party") ~ "Left",
+                     Party %in% c("National Party", "ACT New Zealand", "Conservative") ~ "Right")) %>%
+  filter(!is.na(Group)) %>%
+  group_by(Group, Electorate) %>%
+  summarise(`2014` = sum(`2014`), `2017` = sum(`2017`)) %>%
+  ungroup()
+pv_change_lr <-
+  inner_join(
+    pv_change_lr %>% 
+      filter(Group == "Left") %>% 
+      select(Electorate, `Left 2014` = `2014`, `Left 2017` = `2017`),
+    pv_change_lr %>% 
+      filter(Group == "Right") %>% 
+      select(Electorate, `Right 2014` = `2014`, `Right 2017` = `2017`)
+  ) %>% 
+  mutate(Electorate = fct_reorder(Electorate, `Left 2017`))
+plot_ly(pv_change_lr, color = I("gray80")) %>% 
+  add_segments(
+    x = ~pmin(`Left 2014`, `Left 2017`), xend = ~pmax(`Left 2014`, `Left 2017`),
+    y = ~Electorate, yend = ~Electorate,
+    showlegend = FALSE
+  ) %>% 
+  add_segments(
+    x = ~pmin(`Right 2014`, `Right 2017`), xend = ~pmax(`Right 2014`, `Right 2017`),
+    y = ~Electorate, yend = ~Electorate,
+    showlegend = FALSE
+  ) %>% 
+  add_markers(
+    x = ~`Left 2014`, y = ~Electorate, name = "Left 2014",
+    color = I("gray80"), hoverinfo = "text",
+    text = ~paste0(`Left 2014`, "% of ", Electorate, " voted for Lab/Grn in 2014")
+  ) %>% 
+  add_markers(
+    x = ~`Right 2014`, y = ~Electorate, name = "Right 2014",
+    color = I("gray80"), hoverinfo = "text",
+    text = ~paste0(`Right 2014`, "% of ", Electorate, " voted for Nat/ACT/Cons in 2014")
+  ) %>% 
+  add_markers(
+    x = ~`Left 2017`, y = ~Electorate, name = "Left 2017",
+    color = I("red1"), hoverinfo = "text",
+    text = ~paste0(`Left 2017`, "% of ", Electorate, " voted for Lab/Grn in 2017")
+  ) %>% 
+  add_markers(
+    x = ~`Right 2017`, y = ~Electorate, name = "Right 2017",
+    color = I("blue1"), hoverinfo = "text",
+    text = ~paste0(`Right 2017`, "% of ", Electorate, " voted for Nat/ACT/Cons in 2017")
+  ) %>% 
+  layout(
+    title = "Left and Right Votes by Electorate",
+    xaxis = list(title = "Votes (Percent)", dtick = 10),
+    yaxis = list(title = "", dtick = 1),
+    margin = list(l = 130)
+  )
+```
+
+
+
+
+## Explanation {.sidebar}
+
+These dumbbell plots show the percent of the party vote received in each electorate,
+showing the shift from 2014.
+
+National had mostly decreases, with a few small increases.
+
+The Greens had universal decreases, and Labour had corresponding universal increases.
+
+New Zealand First mostly had decreases, some quite large. Apart from the Winston effect
+in Northland, the most notable increase is in Clutha-Southland, scene of recent controversy.
+
+The Māori Party decreased in six of the Māori seats, but had small gains in South 
+Auckland. ACT pretty much lost all its "large" (1.5-3%) support. And the Conservatives
+lost all their support!
+
+The final one compares votes for "the Left" (Labour and Green) vs "the Right" (National,
+ACT and Conservative). Apart from Manukau East, there's been a universal shift left.
+
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-30013353-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
