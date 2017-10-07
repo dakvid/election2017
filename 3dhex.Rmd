@@ -1,0 +1,242 @@
+---
+title: "3D Hexmaps"
+output: 
+  flexdashboard::flex_dashboard:
+    theme: spacelab
+    self_contained: false
+    lib_dir: lib
+    mathjax: null
+    navbar:
+      - { title: "Intro", icon: "", href: "index.html", align: left }
+      - { title: "Dumbbells", icon: "ion-ios-settings-strong", href: "dumbbells.html", align: left }
+      - { title: "Hexmaps", icon: "fa-map", href: "hexmaps.html", align: left }
+      - { title: "3D Hexmaps", icon: "fa-map", href: "", align: left }
+      - { title: "@dakvid", icon: "fa-twitter", href: "https://twitter.com/dakvid", align: right }
+    social: menu
+    source_code: https://github.com/dakvid/election2017
+---
+
+```{r init, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+```
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(sf)
+library(magrittr)
+library(dplyr)
+library(purrr)
+library(stringr)
+library(plotly)
+
+load("data_geo/nzhex.rda")
+load("data_votes/preliminary/GE2017_prelim.rda")
+
+party_votes <-
+  GE2017_prelim %>% 
+  filter(VotingType == "Party") %>% 
+  group_by(id, Party) %>% 
+  summarise(Votes = sum(Votes)) %>% 
+  ungroup() %>% 
+  filter(!str_detect(Party, "nformal"))
+```
+
+
+```{r 3d_fn}
+draw_3dhex <- function(mesh, largs) {
+  hex_x <- st_coordinates(largs$geometry)[, "X"]
+  hex_y <- st_coordinates(largs$geometry)[, "Y"]
+  mesh %>% 
+    add_mesh(
+      x = ~rep(-hex_x, 2),
+      y = ~rep(-hex_y, 2),
+      z = ~c(rep(0, 7), rep(largs$Votes, 7)),
+      name = ~paste(largs$electorate_name, prettyNum(largs$Votes, big.mark = ','), "votes"),
+      hoverinfo = "name"
+    )
+}
+
+xyaxis <- 
+  list(
+    title = "",
+    showgrid = FALSE,
+    showticklabels = FALSE,
+    ticks = ""
+  )
+```
+
+
+## Explanation {.sidebar}
+
+Click and drag to rotate the plot in three dimensions!
+
+The columns are the same hexagons as in the
+[flat hexmaps](hexmaps.html)
+but the heights are the numbers of votes received.
+
+Before you ask: the colours are randomly assigned (by default), and I'm not yet sure why
+the hexagons are squashed.
+
+These views allow us to see more clearly, eg how much higher the Green's support is in Wellingoton.
+Enjoy exploring!
+
+
+
+## 3D Hexmaps {.tabset .tabset-fade}
+
+### National
+
+```{r 3dhex_national}
+party_votes %>% 
+  filter(Party == "National Party") %>% 
+  inner_join(nzhex) %>% 
+  select(electorate_name, Votes, geometry) %>% 
+  transpose() %>% 
+  reduce(draw_3dhex, .init = plot_ly(type = "mesh3d", alphahull = 0)) %>% 
+  layout(
+    scene = list(
+      xaxis = xyaxis,
+      yaxis = xyaxis,
+      zaxis = list(title = "Votes")
+    ),
+    aspectratio = c(5, 1, 1),
+    title = "2017 Votes for the National Party"
+  )
+```
+
+### Labour
+
+```{r 3dhex_labour}
+party_votes %>% 
+  filter(Party == "Labour Party") %>% 
+  inner_join(nzhex) %>% 
+  select(electorate_name, Votes, geometry) %>% 
+  transpose() %>% 
+  reduce(draw_3dhex, .init = plot_ly(type = "mesh3d", alphahull = 0)) %>% 
+  layout(
+    scene = list(
+      xaxis = xyaxis,
+      yaxis = xyaxis,
+      zaxis = list(title = "Votes")
+    ),
+    title = "2017 Votes for the Labour Party"
+  )
+```
+
+
+### NZ First
+
+```{r 3dhex_nzfirst}
+party_votes %>% 
+  filter(Party == "New Zealand First Party") %>% 
+  inner_join(nzhex) %>% 
+  select(electorate_name, Votes, geometry) %>% 
+  transpose() %>% 
+  reduce(draw_3dhex, .init = plot_ly(type = "mesh3d", alphahull = 0)) %>% 
+  layout(
+    scene = list(
+      xaxis = xyaxis,
+      yaxis = xyaxis,
+      zaxis = list(title = "Votes")
+    ),
+    title = "2017 Votes for the NZ First Party"
+  )
+```
+
+
+### Green
+
+```{r 3dhex_green}
+party_votes %>% 
+  filter(Party == "Green Party") %>% 
+  inner_join(nzhex) %>% 
+  select(electorate_name, Votes, geometry) %>% 
+  transpose() %>% 
+  reduce(draw_3dhex, .init = plot_ly(type = "mesh3d", alphahull = 0)) %>% 
+  layout(
+    scene = list(
+      xaxis = xyaxis,
+      yaxis = xyaxis,
+      zaxis = list(title = "Votes")
+    ),
+    title = "2017 Votes for the Green Party"
+  )
+```
+
+
+### Māori
+
+```{r 3dhex_maori}
+party_votes %>% 
+  filter(Party == "Māori Party") %>% 
+  inner_join(nzhex) %>% 
+  select(electorate_name, Votes, geometry) %>% 
+  transpose() %>% 
+  reduce(draw_3dhex, .init = plot_ly(type = "mesh3d", alphahull = 0)) %>% 
+  layout(
+    scene = list(
+      xaxis = xyaxis,
+      yaxis = xyaxis,
+      zaxis = list(title = "Votes")
+    ),
+    title = "2017 Votes for the Māori Party"
+  )
+```
+
+
+### TOP
+
+```{r 3dhex_top}
+party_votes %>% 
+  filter(Party == "The Opportunities Party (TOP)") %>% 
+  inner_join(nzhex) %>% 
+  select(electorate_name, Votes, geometry) %>% 
+  transpose() %>% 
+  reduce(draw_3dhex, .init = plot_ly(type = "mesh3d", alphahull = 0)) %>% 
+  layout(
+    scene = list(
+      xaxis = xyaxis,
+      yaxis = xyaxis,
+      zaxis = list(title = "Votes")
+    ),
+    title = "2017 Votes for The Opportunities Party"
+  )
+```
+
+
+
+### ACT
+
+```{r 3dhex_act}
+party_votes %>% 
+  filter(Party == "ACT New Zealand") %>% 
+  inner_join(nzhex) %>% 
+  select(electorate_name, Votes, geometry) %>% 
+  transpose() %>% 
+  reduce(draw_3dhex, .init = plot_ly(type = "mesh3d", alphahull = 0)) %>% 
+  layout(
+    scene = list(
+      xaxis = xyaxis,
+      yaxis = xyaxis,
+      zaxis = list(title = "Votes")
+    ),
+    title = "2017 Votes for the ACT Party"
+  )
+```
+
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-30013353-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
