@@ -2,15 +2,16 @@
 title: "2017 New Zealand Election"
 output: 
   flexdashboard::flex_dashboard:
+    vertical_layout: scroll
     theme: spacelab
     self_contained: false
     lib_dir: lib
     mathjax: null
     navbar:
-      - { title: "Intro", icon: "", href: "", align: left }
+      - { title: "Intro", icon: "fa-home", href: "", align: left }
       - { title: "Dumbbells", icon: "ion-ios-settings-strong", href: "dumbbells.html", align: left }
-      - { title: "Hexmaps", icon: "fa-map", href: "hexmaps.html", align: left }
-      - { title: "3D Hexmaps", icon: "fa-map", href: "3dhex.html", align: left }
+      - { title: "Hexmaps", icon: "ion-cube", href: "hexmaps.html", align: left }
+      - { title: "3D Hexmaps", icon: "fa-cubes", href: "3dhex.html", align: left }
       - { title: "@dakvid", icon: "fa-twitter", href: "https://twitter.com/dakvid", align: right }
     social: menu
     source_code: https://github.com/dakvid/election2017
@@ -30,47 +31,52 @@ library(flexdashboard)
 
 ### Welcome
 
-We just (September 2017) had an election in New Zealand, and try as I might I could not
+We just had [an election](https://en.wikipedia.org/wiki/New_Zealand_general_election,_2017) in New Zealand, and try as I might I could not
 resist trying to visualise some of the results. These are just what piqued my interest,
 rather than an attempt to be complete or appeal to everyone. Hopefully others find them
 interesting, if not useful.
 
+Note that these pages are *desktop friendly*.
+I wanted to make them mobile friendly, but whilst they don't "fail" as
+such, they don't really succeed on a small screen. If you're like me you'll be
+wanting to spend some time poking around with the mouse though, so it's probably
+not a bad thing.
+
 David Friggens, October 2017
 
 ### Hexmaps
+
+<p>
+<a href="hexmaps.html#national"><img width="49%" src="images/intro_hex_nat.png" /></a>
+<a href="hexmaps.html#labour"><img width="49%" src="images/intro_hex_lab.png" /></a>
+</p>
 
 Geographical maps of results don't give a good representation of the spread of support
 various parties have. So here are some cartograms with one tile per electorate. You can
 see candidate race winners, vote concentration for all parties, and which electorates
 favoured the incumbent coalition or not.
 
-### Others
+### 3D Hexmaps
 
-Unsurprisingly, other people have done some fantastic visualisations of results too.
-If you like these, you'll like those too. (And if you don't like these, you may
-like those better!)
+<p><a href="3dhex.html"><img width="100%" src="images/intro_3dhex.png" /></a></p>
+
+I wanted to go further than the five colour shades in the hexmaps, so made these
+hexmap / 3d barchart hybrids. They do give a bit more, but are potentially difficult
+to interpret. I'm just happy that I managed to make it work!
+(Note the page is 2MB and might take a few seconds to load.)
 
 
 ## 
 
 ### Dumbbells
 
+<p><a href="dumbbells.html#nz-first"><img width="100%" src="images/intro_db_nzf.png" /></a></p>
+
 We know which parties gain and lost votes since 2014, but the national number doesn't
 tell the full story. Was there universal swing, or were there localised ups and
 downs? These dumbbell plots help make it clear.
 
-### Desktop-friendly
-
-I wanted to make these pages mobile friendly. However, whilst they don't "fail" as
-such, they don't really succeed on a small screen. If you're like me you'll be
-wanting to spend some time poking around with the mouse though, so it's probably
-not a bad thing.
-
-### 3D Hexmaps
-
-I wanted to go further than the five colour shades in the hexmaps, so made these
-hexmap / 3d barchart hybrids. They go give a bit more, but are potentially difficult
-to interpret. I'm just happy that I managed to make it work!
+<p><a href="dumbbells.html#left-vs-right"><img width="100%" src="images/intro_db_lr.png" /></a></p>
 
 
 
