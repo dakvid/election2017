@@ -7,10 +7,10 @@ output:
     lib_dir: lib
     mathjax: null
     navbar:
-      - { title: "Intro", icon: "", href: "index.html", align: left }
+      - { title: "Intro", icon: "fa-home", href: "index.html", align: left }
       - { title: "Dumbbells", icon: "ion-ios-settings-strong", href: "", align: left }
-      - { title: "Hexmaps", icon: "fa-map", href: "hexmaps.html", align: left }
-      - { title: "3D Hexmaps", icon: "fa-map", href: "3dhex.html", align: left }
+      - { title: "Hexmaps", icon: "ion-cube", href: "hexmaps.html", align: left }
+      - { title: "3D Hexmaps", icon: "fa-cubes", href: "3dhex.html", align: left }
       - { title: "@dakvid", icon: "fa-twitter", href: "https://twitter.com/dakvid", align: right }
     social: menu
     source_code: https://github.com/dakvid/election2017
@@ -397,7 +397,7 @@ plot_ly(pv_change_lr, color = I("gray80")) %>%
 ## Explanation {.sidebar}
 
 These dumbbell plots show the percent of the party vote received in each electorate,
-showing the shift from 2014.
+highlighting the shift from 2014.
 
 National had mostly decreases, with a few small increases.
 

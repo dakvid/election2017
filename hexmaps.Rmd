@@ -7,10 +7,10 @@ output:
     lib_dir: lib
     mathjax: null
     navbar:
-      - { title: "Intro", icon: "", href: "index.html", align: left }
+      - { title: "Intro", icon: "fa-home", href: "index.html", align: left }
       - { title: "Dumbbells", icon: "ion-ios-settings-strong", href: "dumbbells.html", align: left }
-      - { title: "Hexmaps", icon: "fa-map", href: "", align: left }
-      - { title: "3D Hexmaps", icon: "fa-map", href: "3dhex.html", align: left }
+      - { title: "Hexmaps", icon: "ion-cube", href: "", align: left }
+      - { title: "3D Hexmaps", icon: "fa-cubes", href: "3dhex.html", align: left }
       - { title: "@dakvid", icon: "fa-twitter", href: "https://twitter.com/dakvid", align: right }
     social: menu
     source_code: https://github.com/dakvid/election2017
@@ -142,7 +142,7 @@ Māori electorates make up a second mini NZ in the bottom right.
 
 Why are these maps more useful than a geographic map? In short, because they don't
 overrepresent rural areas and underrepresent urban areas.
-[Stephan Beban (NZ)](https://thespinoff.co.nz/politics/24-09-2017/a-better-visual-breakdown-of-the-2017-election-results/) and
+[Stephen Beban (NZ)](https://thespinoff.co.nz/politics/24-09-2017/a-better-visual-breakdown-of-the-2017-election-results/) and
 [Pitch Interactive (USA)](http://pitchinteractive.com/latest/tilegrams-more-human-maps/)
 have more to say on the topic.
 
@@ -336,7 +336,7 @@ leaflet(options = getLeafletOptions(5.8, 5.8)) %>%
     data = nzhex %>% 
       inner_join(party_votes %>% filter(Party == "National Party")),
     label = ~labeltext,
-    weight=2, color='#000000', group = 'National 46.0%',
+    weight=2, color='#000000', group = 'National 44.4%',
     fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
     highlightOptions = highlightOptions(weight = 4)
   ) %>% 
@@ -344,7 +344,7 @@ leaflet(options = getLeafletOptions(5.8, 5.8)) %>%
     data = nzhex %>% 
       inner_join(party_votes %>% filter(Party == "Labour Party")),
     label = ~labeltext,
-    weight=2, color='#000000', group = 'Labour 35.8%',
+    weight=2, color='#000000', group = 'Labour 36.9%',
     fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
     highlightOptions = highlightOptions(weight = 4)
   ) %>% 
@@ -352,7 +352,7 @@ leaflet(options = getLeafletOptions(5.8, 5.8)) %>%
     data = nzhex %>% 
       inner_join(party_votes %>% filter(Party == "New Zealand First Party")),
     label = ~labeltext,
-    weight=2, color='#000000', group = 'NZ First 7.5%',
+    weight=2, color='#000000', group = 'NZ First 7.2%',
     fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
     highlightOptions = highlightOptions(weight = 4)
   ) %>% 
@@ -360,7 +360,7 @@ leaflet(options = getLeafletOptions(5.8, 5.8)) %>%
     data = nzhex %>% 
       inner_join(party_votes %>% filter(Party == "Green Party")),
     label = ~labeltext,
-    weight=2, color='#000000', group = 'Green 5.9%',
+    weight=2, color='#000000', group = 'Green 6.3%',
     fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
     highlightOptions = highlightOptions(weight = 4)
   ) %>% 
@@ -368,7 +368,7 @@ leaflet(options = getLeafletOptions(5.8, 5.8)) %>%
     data = nzhex %>% 
       inner_join(party_votes %>% filter(Party == "The Opportunities Party (TOP)")),
     label = ~labeltext,
-    weight=2, color='#000000', group = 'TOP 2.2%',
+    weight=2, color='#000000', group = 'TOP 2.4%',
     fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
     highlightOptions = highlightOptions(weight = 4)
   ) %>% 
@@ -376,7 +376,7 @@ leaflet(options = getLeafletOptions(5.8, 5.8)) %>%
     data = nzhex %>% 
       inner_join(party_votes %>% filter(Party == "Māori Party")),
     label = ~labeltext,
-    weight=2, color='#000000', group = 'Māori 1.1%',
+    weight=2, color='#000000', group = 'Māori 1.2%',
     fillOpacity = ~opa, opacity = 1, fillColor = ~party_colour,
     highlightOptions = highlightOptions(weight = 4)
   ) %>% 
@@ -396,8 +396,8 @@ leaflet(options = getLeafletOptions(5.8, 5.8)) %>%
       offset=c(-6,-11))
   ) %>% 
   addLayersControl(
-    baseGroups = c("National 46.0%", "Labour 35.8%", "NZ First 7.5%", "Green 5.9%",
-                   "TOP 2.2%", "Māori 1.1%", "ACT 0.5%"),
+    baseGroups = c("National 44.4%", "Labour 36.9%", "NZ First 7.2%", "Green 6.3%",
+                   "TOP 2.4%", "Māori 1.2%", "ACT 0.5%"),
     options = layersControlOptions(collapsed = FALSE)
   ) %>% 
   onRender(
@@ -535,8 +535,8 @@ electorates, but none by more than 4% (the 2014 national vote for the collapsed
 Conservative party).
 The decreases ranged up to
 `r inner_join(coalition_votes, coalition_votes_2014) %>% inner_join(nzhex) %>% arrange(PerCent2014 - PerCent, PerCent) %>% tail(1) %$% {PerCent2014 - PerCent}`%
-in
-`r inner_join(coalition_votes, coalition_votes_2014) %>% inner_join(nzhex) %>% arrange(PerCent2014 - PerCent, PerCent) %>% tail(1) %$% electorate_name`.
+(in
+`r inner_join(coalition_votes, coalition_votes_2014) %>% inner_join(nzhex) %>% arrange(PerCent2014 - PerCent, PerCent) %>% tail(1) %$% electorate_name`).
 
 
 ### Tiny Party Votes: Are the sub 0.5% parties evenly ignored, or do they have localised support?
@@ -647,11 +647,7 @@ had a local focus.
 The rest of the distributions are pretty much what I expected, though when a party doesn't break
 100 votes in any electorate (as is the case with the bottom four) it's easy to overinterpret the noise.
 
-The biggest surprise to me was that every party got at least 1 vote in every electorate, with only
-three exceptions:
-MANA in Ilam,
-United Future in Ikaroa-Rāwhiti, and
-Democrats for Social Credit in Te Tai Tokerau.
+The biggest surprise to me was that every party got at least 1 vote in every electorate.
 
 
 

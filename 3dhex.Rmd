@@ -7,10 +7,10 @@ output:
     lib_dir: lib
     mathjax: null
     navbar:
-      - { title: "Intro", icon: "", href: "index.html", align: left }
+      - { title: "Intro", icon: "fa-home", href: "index.html", align: left }
       - { title: "Dumbbells", icon: "ion-ios-settings-strong", href: "dumbbells.html", align: left }
-      - { title: "Hexmaps", icon: "fa-map", href: "hexmaps.html", align: left }
-      - { title: "3D Hexmaps", icon: "fa-map", href: "", align: left }
+      - { title: "Hexmaps", icon: "ion-cube", href: "hexmaps.html", align: left }
+      - { title: "3D Hexmaps", icon: "fa-cubes", href: "", align: left }
       - { title: "@dakvid", icon: "fa-twitter", href: "https://twitter.com/dakvid", align: right }
     social: menu
     source_code: https://github.com/dakvid/election2017
@@ -76,11 +76,15 @@ The columns are the same hexagons as in the
 [flat hexmaps](hexmaps.html)
 but the heights are the numbers of votes received.
 
-Before you ask: the colours are randomly assigned (by default), and I'm not yet sure why
-the hexagons are squashed.
+Before you ask: the colours are randomly assigned (by default).
+I had a bit of trouble trying to get these working,
+and still haven't figured out how to unsquash the hexagons or
+assign a uniform colour.
 
-These views allow us to see more clearly, eg how much higher the Green's support is in Wellingoton.
-Enjoy exploring!
+These views allow us to see a few things more clearly,
+such as how much higher the Green's support is in Wellington,
+and the variation in support for the Māori Party among the
+Māori electorates.
 
 
 
