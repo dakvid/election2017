@@ -43,14 +43,14 @@ end_label_header <- "</span><br>"
 end_label_text <- "</div>"
 
 load("data_geo/nzhex.rda")
-load("data_votes/preliminary/GE2017_prelim.rda")
+load("data_votes/GE2017.rda")
 data("GE2014")
 GE2014 %<>%
   mutate(id = Electorate %>% str_extract("[0-9]+") %>% as.integer(),
          Party = if_else(Party == "Maori Party", "Māori Party", Party))
 
 party_voters_2017 <-
-  GE2017_prelim %>% 
+  GE2017 %>% 
   filter(VotingType == "Party",
          !str_detect(Party, "nformal")) %>% 
   group_by(id) %>% 
@@ -58,7 +58,7 @@ party_voters_2017 <-
   ungroup()
 
 candidate_voters_2017 <-
-  GE2017_prelim %>% 
+  GE2017 %>% 
   filter(VotingType == "Candidate",
          !str_detect(Candidate, "nformal")) %>% 
   group_by(id) %>% 
@@ -169,7 +169,7 @@ visualised in hexmaps...
 
 ```{r hex_candidates}
 electorate_winners <-
-  GE2017_prelim %>%
+  GE2017 %>%
   filter(VotingType == "Candidate") %>%
   group_by(id, Party) %>%
   summarise(Votes = sum(Votes)) %>%
@@ -243,7 +243,7 @@ to
 
 ```{r hex_parties}
 party_votes <-
-  GE2017_prelim %>% 
+  GE2017 %>% 
   filter(VotingType == "Party") %>% 
   group_by(id, Party) %>% 
   summarise(Votes = sum(Votes)) %>% 

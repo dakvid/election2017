@@ -1,5 +1,5 @@
 ---
-title: "3D Hexmaps"
+title: "2017 New Zealand Election"
 output: 
   flexdashboard::flex_dashboard:
     theme: spacelab
@@ -32,10 +32,10 @@ library(stringr)
 library(plotly)
 
 load("data_geo/nzhex.rda")
-load("data_votes/preliminary/GE2017_prelim.rda")
+load("data_votes/GE2017.rda")
 
 party_votes <-
-  GE2017_prelim %>% 
+  GE2017 %>% 
   filter(VotingType == "Party") %>% 
   group_by(id, Party) %>% 
   summarise(Votes = sum(Votes)) %>% 
