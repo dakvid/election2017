@@ -47,8 +47,8 @@ David Friggens, October 2017
 ### Hexmaps
 
 <p>
-<a href="hexmaps.html#national"><img width="49%" src="images/intro_hex_nat.png" /></a>
-<a href="hexmaps.html#labour"><img width="49%" src="images/intro_hex_lab.png" /></a>
+<a href="hexmaps.html"><img width="49%" src="images/intro_hex_nat.png" /></a>
+<a href="hexmaps.html"><img width="49%" src="images/intro_hex_lab.png" /></a>
 </p>
 
 Geographical maps of results don't give a good representation of the spread of support
