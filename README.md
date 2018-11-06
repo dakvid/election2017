@@ -1,4 +1,4 @@
-This is the code and data for http://david.frigge.nz/election2017/
+This is the code and data for https://david.frigge.nz/election2017/
 
 Comments and questions welcome, by email, GitHub issue or tweet.
 
