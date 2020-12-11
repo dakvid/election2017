@@ -156,7 +156,7 @@ This hexagonal layout is due to
 [Joseph Wright](http://mapdruid.blogspot.co.nz/2015/05/hexagonal-tile-map-of-new-zealand.html),
 and I used his shapefiles as a base.
 
-Chris McDowall made [a different hexagonal layout](http://hindsight.clerestories.com/2014/01/06/chris-mcdowall-hexagonal-maps/)
+Chris McDowall made [a different hexagonal layout](http://web.archive.org/web/20140307180437/http://hindsight.clerestories.com/2014/01/06/chris-mcdowall-hexagonal-maps/)
 for the 2011 electorates, which [I adapted](http://david.frigge.nz/nzhex2014/) in 2014.
 I think I like that better in terms of the geographic layout, but it is very
 skinny so it's less compact for on-screen display.
